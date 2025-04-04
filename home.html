@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ana Sayfa - Güzellik Merkezi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff5f7;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #ffe0ea;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #c2185b;
+    }
+
+    .menu-item {
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background-color: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background-color: #f8bbd0;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 30px 40px;
+      overflow-y: auto;
+    }
+
+    .category-title {
+      font-size: 26px;
+      color: #c2185b;
+      margin-bottom: 25px;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .service-button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background-color: #fce4ec;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      width: 100%;
+    }
+
+    .service-button:hover {
+      background-color: #f8bbd0;
+    }
+
+    .service-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-top: 30px;
+      color: #9c1750;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Kategoriler</h2>
+    <div class="menu-item" onclick="showServices('kuafor', this)">Kuaför</div>
+    <div class="menu-item" onclick="showServices('tirnak', this)">Tırnak</div>
+    <div class="menu-item" onclick="showServices('estetik', this)">Estetik</div>
+    <div class="menu-item" onclick="showServices('mezoterapi', this)">Mezoterapi</div>
+    <div class="menu-item" onclick="showServices('lazer', this)">Lazer</div>
+    <div class="menu-item" onclick="showServices('cilt', this)">Cilt Bakımı</div>
+  </div>
+
+  <div class="content">
+    <div class="category-title">Lütfen bir kategori seçin</div>
+    <div class="button-column" id="serviceContainer"></div>
+  </div>
+
+  <script>
+    const icons = {
+      "Saç Kesimi": "💇‍♀️",
+      "Saç Boyama": "🎨",
+      "Makyaj": "💄",
+      "Kaş Alımı": "👁️",
+      "Ombre": "🌈",
+      "Sombre": "🌤️",
+      "Perma": "🌀",
+      "Maşa": "🧷",
+      "Düz Fön": "🧴",
+      "Manikür": "💅",
+      "Pedikür": "🦶",
+      "Jel Tırnak": "✨",
+      "Protez Tırnak": "🔧",
+      "Güçlendirme": "💪",
+      "Kalıcı Oje": "🖌️",
+      "Nail Art": "🎀",
+      "Botoks": "💉",
+      "Dolgu": "🔮",
+      "Kirpik Lifting": "👁️",
+      "İpek Kirpik": "🌟",
+      "Paris Işıltısı": "✨",
+      "Gençlik Aşısı": "💫",
+      "Somon DNA": "🧬",
+      "Saç Mezoterapisi": "🧪",
+      "Yüz Mezoterapisi (Mezolifting)": "🧴",
+      "PRP Mezoterapisi": "🩸",
+      "İğnesiz Mezoterapi": "🔬",
+      "Selülit Mezoterapisi": "🏃‍♀️",
+      "Klasik Cilt Bakımı": "🧖‍♀️",
+      "Akne (Sivilce) Bakımı": "😶‍🌫️",
+      "Leke Karşıtı Bakım": "☀️",
+      "Anti-aging Bakım": "🕰️",
+      "Hydrafacial": "💧",
+      "C Vitamini Bakımı": "🍊",
+      "Nemlendirici Derin Bakım": "🫧",
+      "Yüz": "😊",
+      "Kol": "💪",
+      "Bacak": "🦵",
+      "Tüm Vücut": "🧍"
+    };
+
+    const data = {
+      kuafor: ["Saç Kesimi", "Saç Boyama", "Makyaj", "Kaş Alımı", "Ombre", "Sombre", "Perma", "Maşa", "Düz Fön"],
+      tirnak: ["Manikür", "Pedikür", "Jel Tırnak", "Protez Tırnak", "Güçlendirme", "Kalıcı Oje", "Nail Art"],
+      estetik: ["Botoks", "Dolgu", "Kirpik Lifting", "İpek Kirpik", "Paris Işıltısı", "Gençlik Aşısı", "Somon DNA"],
+      mezoterapi: ["Saç Mezoterapisi", "Yüz Mezoterapisi (Mezolifting)", "PRP Mezoterapisi", "İğnesiz Mezoterapi", "Selülit Mezoterapisi"],
+      lazer: {
+        "Buz Lazer": ["Yüz", "Kol", "Bacak", "Tüm Vücut"],
+        "Alexandrite Lazer": ["Yüz", "Kol", "Bacak", "Tüm Vücut"],
+        "Diod Lazer": ["Yüz", "Kol", "Bacak", "Tüm Vücut"]
+      },
+      cilt: ["Klasik Cilt Bakımı", "Akne (Sivilce) Bakımı", "Leke Karşıtı Bakım", "Anti-aging Bakım", "Hydrafacial", "C Vitamini Bakımı", "Nemlendirici Derin Bakım"]
+    };
+
+    function showServices(category, element) {
+      document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
+      element.classList.add("active");
+
+      const container = document.getElementById("serviceContainer");
+      const title = document.querySelector(".category-title");
+      container.innerHTML = "";
+
+      if (category === "lazer") {
+        title.textContent = "Lazer Seçenekleri";
+        for (const [type, parts] of Object.entries(data.lazer)) {
+          const groupTitle = document.createElement("h3");
+          groupTitle.textContent = type;
+          container.appendChild(groupTitle);
+
+          parts.forEach(part => {
+            const btn = document.createElement("button");
+            btn.className = "service-button";
+            btn.innerHTML = `<span>${icons[part] || ''}</span> ${part}`;
+            container.appendChild(btn);
+          });
+        }
+      } else {
+        title.textContent = `${element.textContent} Hizmetleri`;
+        data[category].forEach(service => {
+          const btn = document.createElement("button");
+          btn.className = "service-button";
+          btn.innerHTML = `<span>${icons[service] || ''}</span> ${service}`;
+          container.appendChild(btn);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
