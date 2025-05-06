@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Randevu Al</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #FAD4D4, #A3CEF1, #D9B8F1);
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #8e44ad;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+    .hours {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .hour-btn {
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      border: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .available { background-color: #fff; color: #333; border-color: #8e44ad; }
+    .selected { background-color: #2ecc71; color: white; }
+    .disabled { background-color: #e74c3c; color: white; cursor: not-allowed; }
+    #submitBtn {
+      background-color: #8e44ad;
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Randevu Al</h2>
+    <p id="salonInfo"></p>
+    <input type="text" id="name" placeholder="Ad">
+    <input type="text" id="surname" placeholder="Soyad">
+    <input type="tel" id="phone" placeholder="Telefon (11 hane)" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)">
+    <input type="date" id="datePicker">
+    <div class="hours" id="hourContainer"></div>
+    <button id="submitBtn" disabled>Randevuyu Kaydet</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const salon = JSON.parse(localStorage.getItem("selectedSalon") || "{}");
+    const userEmail = localStorage.getItem("userEmail") || "nurnehir@gmail.com";
+    const appointmentId = localStorage.getItem("editAppointmentId");
+    const appointmentData = JSON.parse(localStorage.getItem("editAppointmentData") || "null");
+
+    document.getElementById("salonInfo").innerText =
+      (salon.salonName || salon.name || "") + " - " + (salon.salonAddress || salon.address || "");
+
+    const hours = [
+      "09:00","09:30","10:00","10:30","11:00","11:30",
+      "12:00","12:30","13:00","13:30","14:00","14:30",
+      "15:00","15:30","16:00","16:30","17:00","17:30","18:00"
+    ];
+    let selectedHour = null;
+
+    async function loadTakenHours(dateStr) {
+      if (!salon.salonId && !salon.id) return [];
+      const start = new Date(dateStr + 'T00:00:00');
+      const end = new Date(dateStr + 'T23:59:59');
+      const snapshot = await db.collection("appointments")
+        .where("salonId", "==", salon.salonId || salon.id)
+        .where("appointmentDate", ">=", start)
+        .where("appointmentDate", "<=", end)
+        .get();
+      return snapshot.docs.map(doc => {
+        const d = doc.data().appointmentDate?.toDate?.();
+        if (!d) return null;
+        const h = d.getHours().toString().padStart(2, '0');
+        const m = d.getMinutes().toString().padStart(2, '0');
+        return `${h}:${m}`;
+      }).filter(Boolean);
+    }
+
+    async function renderHours(dateStr) {
+      const taken = await loadTakenHours(dateStr);
+      const container = document.getElementById("hourContainer");
+      container.innerHTML = "";
+      selectedHour = null;
+      document.getElementById("submitBtn").disabled = true;
+
+      hours.forEach(hour => {
+        const btn = document.createElement("div");
+        btn.textContent = hour;
+        btn.className = "hour-btn";
+
+        const isTaken = taken.includes(hour) && (
+          !appointmentData ||
+          appointmentData.appointmentTime !== hour ||
+          appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10) !== dateStr
+        );
+
+        if (isTaken) {
+          btn.classList.add("disabled");
+        } else {
+          btn.classList.add("available");
+          btn.onclick = () => {
+            document.querySelectorAll(".available").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            selectedHour = hour;
+            document.getElementById("submitBtn").disabled = false;
+          };
+          // Güncelleme modundaki saat seçiliyse otomatik seç
+          if (appointmentData && appointmentData.appointmentTime === hour &&
+              appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10) === dateStr) {
+            btn.classList.add("selected");
+            selectedHour = hour;
+            document.getElementById("submitBtn").disabled = false;
+          }
+        }
+        container.appendChild(btn);
+      });
+    }
+
+    document.getElementById("datePicker").addEventListener("change", (e) => {
+      renderHours(e.target.value);
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const name = document.getElementById("name").value.trim();
+      const surname = document.getElementById("surname").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const date = document.getElementById("datePicker").value;
+
+      if (!name || !surname || !phone || !date || !selectedHour) {
+        alert("Tüm alanları doldurup bir saat seçmelisiniz.");
+        return;
+      }
+
+      const timestamp = new Date(date + 'T' + selectedHour);
+      const data = {
+        salonId: salon.salonId || salon.id,
+        salonName: salon.salonName || salon.name,
+        salonAddress: salon.salonAddress || salon.address,
+        salonCategory: salon.salonCategory || salon.category,
+        appointmentDate: timestamp,
+        appointmentTime: selectedHour,
+        phone: phone,
+        userName: name,
+        userSurname: surname,
+        userEmail: userEmail,
+        updatedAt: new Date(),
+        service: ""
+      };
+
+      if (appointmentId) {
+        await db.collection("appointments").doc(appointmentId).update(data);
+        localStorage.removeItem("editAppointmentId");
+        localStorage.removeItem("editAppointmentData");
+        alert("Randevu güncellendi.");
+      } else {
+        await db.collection("appointments").add({
+          ...data,
+          createdAt: new Date()
+        });
+        alert("Randevunuz kaydedildi.");
+      }
+
+      window.location.href = "randevularim.html";
+    });
+
+    window.onload = () => {
+      if (appointmentData) {
+        document.getElementById("name").value = appointmentData.userName || "";
+        document.getElementById("surname").value = appointmentData.userSurname || "";
+        document.getElementById("phone").value = appointmentData.phone || "";
+        const date = appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10);
+        if (date) {
+          document.getElementById("datePicker").value = date;
+          renderHours(date); // saatleri göster
+        }
+      }
+    };
+  </script>
+</body>
+</html>

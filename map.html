@@ -111,11 +111,17 @@
           });
 
           document.getElementById("randevuBtn").addEventListener("click", () => {
-            if (selectedMarkerData) {
-              alert("Randevu alınacak yer: " + selectedMarkerData.name);
-              // yönlendirme yapılabilir burada
-            }
-          });
+  if (selectedMarkerData) {
+    localStorage.setItem("selectedSalon", JSON.stringify({
+      salonId: selectedMarkerData.id,
+      salonName: selectedMarkerData.name,
+      salonAddress: selectedMarkerData.address,
+      salonCategory: selectedMarkerData.category
+    }));
+    window.location.href = "randevuAl.html";
+  }
+});
+
 
           document.getElementById("selectCity").addEventListener("change", (e) => {
             const city = e.target.value;
@@ -161,6 +167,14 @@
               infoWindow.open(map, marker);
               selectedMarkerData = data;
               document.getElementById("randevuBtn").disabled = false;
+
+              // Marker tıklanınca salon bilgilerini localStorage'a yaz
+              localStorage.setItem("selectedSalon", JSON.stringify({
+                salonId: doc.id,
+                salonName: data.name,
+                salonAddress: data.address,
+                salonCategory: data.category
+              }));
             });
           }
         });

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Randevularım</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f6f3ff, #e0eafc);
+    }
+    h2 {
+      text-align: center;
+      color: #6a1b9a;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .info {
+      flex-grow: 1;
+    }
+    .info h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    .info p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 6px;
+    }
+    .icon-edit { color: #1976d2; }
+    .icon-delete { color: #e53935; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Randevularım</h2>
+    <div id="appointmentList"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const userEmail = localStorage.getItem("userEmail") || "nurnehir@gmail.com";
+    const container = document.getElementById("appointmentList");
+
+    async function loadAppointments() {
+      const snapshot = await db.collection("appointments")
+        .where("userEmail", "==", userEmail)
+        .orderBy("appointmentDate", "desc")
+        .get();
+
+      container.innerHTML = "";
+
+      if (snapshot.empty) {
+        container.innerHTML = "<p style='text-align:center;'>Henüz randevunuz yok.</p>";
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const date = data.appointmentDate.toDate();
+        const formattedDate = date.toLocaleDateString("tr-TR");
+        const formattedTime = date.toLocaleTimeString("tr-TR", { hour: '2-digit', minute: '2-digit' });
+
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <div class="info">
+            <h3>${data.salonName}</h3>
+            <p><strong>Tarih:</strong> ${formattedDate} - ${formattedTime}</p>
+            <p><strong>Hizmet:</strong> ${data.service || 'Belirtilmemiş'}</p>
+          </div>
+          <div class="actions">
+            <button class="icon-btn icon-edit" title="Güncelle">&#9998;</button>
+            <button class="icon-btn icon-delete" title="Sil">&#128465;</button>
+          </div>
+        `;
+
+        div.querySelector(".icon-delete").onclick = async () => {
+          if (confirm("Bu randevuyu silmek istiyor musunuz?")) {
+            await db.collection("appointments").doc(doc.id).delete();
+            loadAppointments();
+          }
+        };
+
+        div.querySelector(".icon-edit").onclick = () => {
+          localStorage.setItem("editAppointmentId", doc.id);
+          localStorage.setItem("editAppointmentData", JSON.stringify(data));
+          window.location.href = "randevual.html";
+        };
+
+        container.appendChild(div);
+      });
+    }
+
+    loadAppointments();
+  </script>
+</body>
+</html>
