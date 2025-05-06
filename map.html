@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salon Haritası</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    #controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 5;
+      background: white;
+      padding: 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 200px;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    .button {
+      padding: 10px 15px;
+      font-size: 14px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background-color: #ccc;
+      color: black;
+      transition: background-color 0.3s;
+    }
+    .button:enabled {
+      background-color: #007bff;
+      color: white;
+    }
+    #selectCity {
+      padding: 8px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+    }
+  </style>
+  <!-- Firebase (non-module version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div id="controls">
+    <select id="selectCity">
+      <option value="">Şehir Seç</option>
+      <option value="Ankara">Ankara</option>
+      <option value="İstanbul">İstanbul</option>
+      <option value="İzmir">İzmir</option>
+      <option value="Bursa">Bursa</option>
+      <option value="Elazığ">Elazığ</option>
+    </select>
+    <button class="button" id="konumBtn">Konumumu Göster</button>
+    <button class="button" id="randevuBtn" disabled>Randevu Al</button>
+  </div>
+  <div id="map"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993449779304",
+      appId: "1:993449779304:web:4686572339b487b816452d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let selectedMarkerData = null;
+    let map;
+
+    function initMap() {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 13,
+            center: userLocation
+          });
+
+          const userMarker = new google.maps.Marker({
+            position: userLocation,
+            map,
+            title: "Konumunuz",
+            icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          });
+
+          loadSalons(userLocation);
+
+          document.getElementById("konumBtn").addEventListener("click", () => {
+            map.setCenter(userLocation);
+          });
+
+          document.getElementById("randevuBtn").addEventListener("click", () => {
+            if (selectedMarkerData) {
+              alert("Randevu alınacak yer: " + selectedMarkerData.name);
+              // yönlendirme yapılabilir burada
+            }
+          });
+
+          document.getElementById("selectCity").addEventListener("change", (e) => {
+            const city = e.target.value;
+            const cities = {
+              "Ankara": { lat: 39.9208, lng: 32.8541 },
+              "İstanbul": { lat: 41.0082, lng: 28.9784 },
+              "İzmir": { lat: 38.4192, lng: 27.1287 },
+              "Bursa": { lat: 40.1828, lng: 29.0663 },
+              "Elazığ": { lat: 38.6743, lng: 39.2220 }
+            };
+            if (cities[city]) {
+              map.setCenter(cities[city]);
+              loadSalons(cities[city]);
+            }
+          });
+        },
+        () => alert("Konum alınamadı."),
+        { enableHighAccuracy: true }
+      );
+    }
+
+    function loadSalons(center) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedCategory = urlParams.get("category");
+
+      db.collection("salons").get().then(snapshot => {
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const isKuafor = selectedCategory === "kuafor" && data.category === "Kuaför";
+          const isGuzellik = selectedCategory !== "kuafor" && data.category === "Güzellik Merkezi";
+
+          if ((isKuafor || isGuzellik) && data.latitude && data.longitude) {
+            const marker = new google.maps.Marker({
+              position: { lat: data.latitude, lng: data.longitude },
+              map
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<strong>${data.name}</strong><br>${data.address}`
+            });
+
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker);
+              selectedMarkerData = data;
+              document.getElementById("randevuBtn").disabled = false;
+            });
+          }
+        });
+      });
+    }
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks&callback=initMap" async defer></script>
+</body>
+</html>

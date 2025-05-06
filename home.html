@@ -61,6 +61,7 @@
     .service-button {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
       padding: 16px 20px;
       border-radius: 12px;
@@ -77,9 +78,22 @@
       background-color: #f8bbd0;
     }
 
-    .service-icon {
-      width: 22px;
-      height: 22px;
+    .map-icon {
+      background-color: #e1bee7;
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+    }
+
+    .map-icon img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
     }
 
     h3 {
@@ -179,7 +193,8 @@
           parts.forEach(part => {
             const btn = document.createElement("button");
             btn.className = "service-button";
-            btn.innerHTML = `<span>${icons[part] || ''}</span> ${part}`;
+            btn.innerHTML = `<span>${icons[part] || ''} ${part}</span><span class='map-icon' onclick="goToMap('${part}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'></span>`;
+
             container.appendChild(btn);
           });
         }
@@ -188,10 +203,15 @@
         data[category].forEach(service => {
           const btn = document.createElement("button");
           btn.className = "service-button";
-          btn.innerHTML = `<span>${icons[service] || ''}</span> ${service}`;
+          btn.innerHTML = `<span>${icons[service] || ''} ${service}</span><span class='map-icon' onclick="goToMap('${service}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'>
+</span>`;
           container.appendChild(btn);
         });
       }
+    }
+
+    function goToMap(service, category) {
+      window.location.href = `map.html?service=${encodeURIComponent(service)}&category=${encodeURIComponent(category)}`;
     }
   </script>
 </body>
