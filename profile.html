@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profilim</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #fff5f7;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .profile-icon {
+      width: 100px;
+      height: 100px;
+      background-color: #ba68c8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: white;
+      margin: 20px auto;
+    }
+
+    #user-email {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fce4ec;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .menu-item:hover {
+      background-color: #f8bbd0;
+    }
+
+    .menu-item i {
+      font-size: 20px;
+      color: #ba68c8;
+      margin-right: 12px;
+    }
+
+    .menu-text {
+      font-size: 16px;
+      flex-grow: 1;
+      text-align: left;
+      color: #333;
+    }
+
+    .arrow {
+      font-size: 18px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Profilim</h2>
+    <div class="profile-icon">👤</div>
+    <p id="user-email">Yükleniyor...</p>
+
+    <div class="menu-item" onclick="window.location.href='randevularim.html'">
+      <i>📅</i>
+      <div class="menu-text">Randevularım</div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='reset_password.html'">
+      <i>🔒</i>
+      <div class="menu-text">Şifreyi Güncelle</div>
+      <div class="arrow">›</div>
+    </div>
+
+    <div class="menu-item" onclick="logout()">
+      <i>↩</i>
+      <div class="menu-text">Çıkış Yap</div>
+      <div class="arrow">›</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.firebasestorage.app",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d",
+      measurementId: "G-CQDVC8YHLP"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const emailField = document.getElementById("user-email");
+  
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email) {
+        emailField.innerText = user.email;
+      } else {
+        emailField.innerText = "Giriş yapılmamış";
+      }
+    });
+  
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
+  </script>
+  

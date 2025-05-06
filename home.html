@@ -18,6 +18,14 @@
       background-color: #ffe0ea;
       padding: 20px;
       box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .sidebar .welcome {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 15px;
     }
 
     .sidebar h2 {
@@ -44,6 +52,7 @@
       flex-grow: 1;
       padding: 30px 40px;
       overflow-y: auto;
+      position: relative;
     }
 
     .category-title {
@@ -101,10 +110,56 @@
       margin-top: 30px;
       color: #9c1750;
     }
+
+    .logout-btn {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      background-color: #fce4ec;
+      padding: 8px;
+      border-radius: 10px;
+      border: 2px solid #c2185b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+      background-color: #f8bbd0;
+    }
+
+    .logout-btn img {
+      width: 24px;
+      height: 24px;
+      filter: invert(20%);
+    }
+
+    .profile-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #ba68c8;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .profile-icon::before {
+      content: '\1F464';
+      font-size: 26px;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <div class="sidebar">
+    <div class="welcome">Hoş Geldiniz!</div>
     <h2>Kategoriler</h2>
     <div class="menu-item" onclick="showServices('kuafor', this)">Kuaför</div>
     <div class="menu-item" onclick="showServices('tirnak', this)">Tırnak</div>
@@ -115,51 +170,26 @@
   </div>
 
   <div class="content">
+    <button class="logout-btn" onclick="logout()">
+      <img src="assets/logout.png" alt="Çıkış">
+    </button>
+    <div class="profile-icon" onclick="goToProfile()"></div>
     <div class="category-title">Lütfen bir kategori seçin</div>
     <div class="button-column" id="serviceContainer"></div>
   </div>
 
   <script>
     const icons = {
-      "Saç Kesimi": "💇‍♀️",
-      "Saç Boyama": "🎨",
-      "Makyaj": "💄",
-      "Kaş Alımı": "👁️",
-      "Ombre": "🌈",
-      "Sombre": "🌤️",
-      "Perma": "🌀",
-      "Maşa": "🧷",
-      "Düz Fön": "🧴",
-      "Manikür": "💅",
-      "Pedikür": "🦶",
-      "Jel Tırnak": "✨",
-      "Protez Tırnak": "🔧",
-      "Güçlendirme": "💪",
-      "Kalıcı Oje": "🖌️",
-      "Nail Art": "🎀",
-      "Botoks": "💉",
-      "Dolgu": "🔮",
-      "Kirpik Lifting": "👁️",
-      "İpek Kirpik": "🌟",
-      "Paris Işıltısı": "✨",
-      "Gençlik Aşısı": "💫",
-      "Somon DNA": "🧬",
-      "Saç Mezoterapisi": "🧪",
-      "Yüz Mezoterapisi (Mezolifting)": "🧴",
-      "PRP Mezoterapisi": "🩸",
-      "İğnesiz Mezoterapi": "🔬",
-      "Selülit Mezoterapisi": "🏃‍♀️",
-      "Klasik Cilt Bakımı": "🧖‍♀️",
-      "Akne (Sivilce) Bakımı": "😶‍🌫️",
-      "Leke Karşıtı Bakım": "☀️",
-      "Anti-aging Bakım": "🕰️",
-      "Hydrafacial": "💧",
-      "C Vitamini Bakımı": "🍊",
-      "Nemlendirici Derin Bakım": "🫧",
-      "Yüz": "😊",
-      "Kol": "💪",
-      "Bacak": "🦵",
-      "Tüm Vücut": "🧍"
+      "Saç Kesimi": "💇‍♀️", "Saç Boyama": "🎨", "Makyaj": "💄", "Kaş Alımı": "👁️", "Ombre": "🌈",
+      "Sombre": "🌤️", "Perma": "🌀", "Maşa": "🧷", "Düz Fön": "🧴", "Manikür": "💅",
+      "Pedikür": "🦶", "Jel Tırnak": "✨", "Protez Tırnak": "🔧", "Güçlendirme": "💪",
+      "Kalıcı Oje": "🖌️", "Nail Art": "🎀", "Botoks": "💉", "Dolgu": "🔮", "Kirpik Lifting": "👁️",
+      "İpek Kirpik": "🌟", "Paris Işıltısı": "✨", "Gençlik Aşısı": "💫", "Somon DNA": "🧬",
+      "Saç Mezoterapisi": "🧪", "Yüz Mezoterapisi (Mezolifting)": "🧴", "PRP Mezoterapisi": "🩸",
+      "İğnesiz Mezoterapi": "🔬", "Selülit Mezoterapisi": "🏃‍♀️", "Klasik Cilt Bakımı": "🧖‍♀️",
+      "Akne (Sivilce) Bakımı": "😶‍🌫️", "Leke Karşıtı Bakım": "☀️", "Anti-aging Bakım": "🕰️",
+      "Hydrafacial": "💧", "C Vitamini Bakımı": "🍊", "Nemlendirici Derin Bakım": "🫧",
+      "Yüz": "😊", "Kol": "💪", "Bacak": "🦵", "Tüm Vücut": "🧍"
     };
 
     const data = {
@@ -194,7 +224,6 @@
             const btn = document.createElement("button");
             btn.className = "service-button";
             btn.innerHTML = `<span>${icons[part] || ''} ${part}</span><span class='map-icon' onclick="goToMap('${part}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'></span>`;
-
             container.appendChild(btn);
           });
         }
@@ -203,8 +232,7 @@
         data[category].forEach(service => {
           const btn = document.createElement("button");
           btn.className = "service-button";
-          btn.innerHTML = `<span>${icons[service] || ''} ${service}</span><span class='map-icon' onclick="goToMap('${service}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'>
-</span>`;
+          btn.innerHTML = `<span>${icons[service] || ''} ${service}</span><span class='map-icon' onclick="goToMap('${service}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'></span>`;
           container.appendChild(btn);
         });
       }
@@ -212,6 +240,14 @@
 
     function goToMap(service, category) {
       window.location.href = `map.html?service=${encodeURIComponent(service)}&category=${encodeURIComponent(category)}`;
+    }
+
+    function logout() {
+      window.location.href = "index.html";
+    }
+
+    function goToProfile() {
+      window.location.href = "profile.html";
     }
   </script>
 </body>
