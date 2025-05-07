@@ -2,219 +2,353 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Randevu Al</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #FAD4D4, #A3CEF1, #D9B8F1);
-      color: #333;
+      padding: 0;
+      background: #f8faff;
+      display: flex;
+      min-height: 100vh;
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    .sidebar {
+      width: 240px;
+      background-color: #e3ecf6;
+      color: #1e3a8a;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-right: 1px solid #d0d7e2;
     }
-    h2 {
+    .sidebar h2 {
+      font-size: 22px;
+      margin-bottom: 40px;
       text-align: center;
-      margin-bottom: 20px;
-      color: #8e44ad;
     }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+    .step {
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      color: #90a4ae;
+      font-size: 16px;
+    }
+    .step.active {
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+    .step.completed span {
+      background-color: #1e3a8a;
+      color: white;
+    }
+    .step span {
+      width: 26px;
+      height: 26px;
+      background-color: #cfd8dc;
+      color: #607d8b;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 12px;
       font-size: 15px;
     }
-    .hours {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
+    .main {
+      flex: 1;
+      padding: 60px 40px;
     }
-    .hour-btn {
-      padding: 8px;
-      font-size: 13px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+    .card h2 {
       text-align: center;
-      border: 2px solid transparent;
-      white-space: nowrap;
+      margin-bottom: 35px;
+      background: linear-gradient(90deg, #5e92f3, #ec407a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
     }
-    .available { background-color: #fff; color: #333; border-color: #8e44ad; }
-    .selected { background-color: #2ecc71; color: white; }
-    .disabled { background-color: #e74c3c; color: white; cursor: not-allowed; }
-    #submitBtn {
-      background-color: #8e44ad;
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background-color: #fcfcfc;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 10px;
+      margin-top: 30px;
+      background: linear-gradient(90deg, #5e92f3, #f06292);
       color: white;
       font-weight: bold;
       border: none;
+      cursor: pointer;
+      transition: background-position 0.3s;
+      background-size: 200% 100%;
+      background-position: left center;
+    }
+    button:hover {
+      background-position: right center;
+    }
+    .hours-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .hour {
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #fafafa;
+      border: 1.5px solid #ccc;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .hour:hover {
+      background-color: #e3f2fd;
+    }
+    .selected {
+      background-color: #81c784 !important;
+      border-color: #388e3c !important;
+      color: white;
+    }
+    .booked {
+      background-color: #ef9a9a !important;
+      color: white;
+      cursor: not-allowed;
+    }
+    .hidden {
+      display: none;
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4caf50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 16px;
+      display: none;
+      z-index: 1000;
     }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h2>Randevu Al</h2>
-    <p id="salonInfo"></p>
-    <input type="text" id="name" placeholder="Ad">
-    <input type="text" id="surname" placeholder="Soyad">
-    <input type="tel" id="phone" placeholder="Telefon (11 hane)" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)">
-    <input type="date" id="datePicker">
-    <div class="hours" id="hourContainer"></div>
-    <button id="submitBtn" disabled>Randevuyu Kaydet</button>
+<body>
+  <div class="sidebar">
+    <h2>Adımlar</h2>
+    <div class="step active" id="step1"><span>1</span> Bilgi Gir</div>
+    <div class="step" id="step2"><span>2</span> Tarih Seç</div>
+    <div class="step" id="step3"><span>3</span> Saat Seç</div>
+    <div class="step" id="step4"><span>4</span> Onayla</div>
+  </div>
+  <div class="main">
+    <div class="card">
+      <h2 id="pageTitle">Randevu Al</h2>
+      <div id="form1">
+        <label for="name">Ad</label>
+        <input type="text" id="name" placeholder="Adınızı girin">
+        <label for="surname">Soyad</label>
+        <input type="text" id="surname" placeholder="Soyadınızı girin">
+        <label for="phone">Telefon</label>
+        <input type="tel" id="phone" placeholder="Telefon numaranız" maxlength="11">
+        <button onclick="nextStep(1)">Devam Et</button>
+      </div>
+      <div id="form2" class="hidden">
+        <label for="date">Tarih</label>
+        <input type="date" id="date">
+      </div>
+      <div id="form3" class="hidden">
+        <div class="hours-grid" id="hoursGrid"></div>
+      </div>
+      <button id="submitBtn" class="hidden">Randevu Al</button>
+    </div>
   </div>
 
+  <div class="toast" id="toast">Randevunuz başarıyla kaydedildi ✔️</div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
       authDomain: "beautysalonapp-4c3af.firebaseapp.com",
       projectId: "beautysalonapp-4c3af"
     };
     firebase.initializeApp(firebaseConfig);
+    const urlParams = new URLSearchParams(window.location.search);
+const randevuId = urlParams.get("id");
+
     const db = firebase.firestore();
 
-    const salon = JSON.parse(localStorage.getItem("selectedSalon") || "{}");
-    const userEmail = localStorage.getItem("userEmail") || "nurnehir@gmail.com";
-    const appointmentId = localStorage.getItem("editAppointmentId");
-    const appointmentData = JSON.parse(localStorage.getItem("editAppointmentData") || "null");
+    window.addEventListener("DOMContentLoaded", () => {
+      const salon = JSON.parse(localStorage.getItem("selectedSalon"));
+      const pageTitle = document.getElementById("pageTitle");
+      if (salon && pageTitle) {
+        pageTitle.textContent = `Randevu Al - ${salon.salonName}`;
+      }
+      if (randevuId) {
+    submitBtn.textContent = "Randevuyu Güncelle";
+  }
+});
+    
 
-    document.getElementById("salonInfo").innerText =
-      (salon.salonName || salon.name || "") + " - " + (salon.salonAddress || salon.address || "");
-
-    const hours = [
-      "09:00","09:30","10:00","10:30","11:00","11:30",
-      "12:00","12:30","13:00","13:30","14:00","14:30",
-      "15:00","15:30","16:00","16:30","17:00","17:30","18:00"
-    ];
+    const dateInput = document.getElementById("date");
+    const hoursGrid = document.getElementById("hoursGrid");
+    const submitBtn = document.getElementById("submitBtn");
+    const toast = document.getElementById("toast");
     let selectedHour = null;
 
-    async function loadTakenHours(dateStr) {
-      if (!salon.salonId && !salon.id) return [];
-      const start = new Date(dateStr + 'T00:00:00');
-      const end = new Date(dateStr + 'T23:59:59');
-      const snapshot = await db.collection("appointments")
-        .where("salonId", "==", salon.salonId || salon.id)
-        .where("appointmentDate", ">=", start)
-        .where("appointmentDate", "<=", end)
-        .get();
-      return snapshot.docs.map(doc => {
-        const d = doc.data().appointmentDate?.toDate?.();
-        if (!d) return null;
-        const h = d.getHours().toString().padStart(2, '0');
-        const m = d.getMinutes().toString().padStart(2, '0');
-        return `${h}:${m}`;
-      }).filter(Boolean);
+    const allHours = [];
+    for (let h = 9; h < 18; h++) {
+      allHours.push(`${h.toString().padStart(2, '0')}:00`);
+      allHours.push(`${h.toString().padStart(2, '0')}:30`);
     }
 
-    async function renderHours(dateStr) {
-      const taken = await loadTakenHours(dateStr);
-      const container = document.getElementById("hourContainer");
-      container.innerHTML = "";
+    function nextStep(step) {
+      if (step === 1) {
+        const name = document.getElementById("name").value.trim();
+        const surname = document.getElementById("surname").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        if (!name || !surname || phone.length !== 11) return alert("Lütfen geçerli telefon numarası girin (11 haneli)");
+
+        document.getElementById("form1").classList.add("hidden");
+        document.getElementById("form2").classList.remove("hidden");
+        document.getElementById("step1").classList.add("completed");
+        document.getElementById("step2").classList.add("active");
+      }
+    }
+
+    dateInput.addEventListener("change", async () => {
+      document.getElementById("form3").classList.remove("hidden");
+      document.getElementById("step2").classList.add("completed");
+      document.getElementById("step3").classList.add("active");
+      submitBtn.classList.remove("hidden");
+
       selectedHour = null;
-      document.getElementById("submitBtn").disabled = true;
+      hoursGrid.innerHTML = "";
 
-      hours.forEach(hour => {
-        const btn = document.createElement("div");
-        btn.textContent = hour;
-        btn.className = "hour-btn";
+      const selectedDate = dateInput.valueAsDate;
+      if (!selectedDate) return;
 
-        const isTaken = taken.includes(hour) && (
-          !appointmentData ||
-          appointmentData.appointmentTime !== hour ||
-          appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10) !== dateStr
-        );
+      const timestampStart = new Date(selectedDate);
+      timestampStart.setHours(0, 0, 0, 0);
+      const timestampEnd = new Date(selectedDate);
+      timestampEnd.setHours(23, 59, 59, 999);
 
-        if (isTaken) {
-          btn.classList.add("disabled");
-        } else {
-          btn.classList.add("available");
-          btn.onclick = () => {
-            document.querySelectorAll(".available").forEach(b => b.classList.remove("selected"));
-            btn.classList.add("selected");
-            selectedHour = hour;
-            document.getElementById("submitBtn").disabled = false;
-          };
-          // Güncelleme modundaki saat seçiliyse otomatik seç
-          if (appointmentData && appointmentData.appointmentTime === hour &&
-              appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10) === dateStr) {
-            btn.classList.add("selected");
-            selectedHour = hour;
-            document.getElementById("submitBtn").disabled = false;
-          }
-        }
-        container.appendChild(btn);
+      const salon = JSON.parse(localStorage.getItem("selectedSalon"));
+
+      const snapshot = await db.collection("appointments")
+        .where("salonId", "==", salon?.salonId)
+        .where("appointmentDate", ">=", timestampStart)
+        .where("appointmentDate", "<=", timestampEnd)
+        .get();
+
+      const booked = snapshot.docs.map(doc => {
+        const d = doc.data().appointmentDate.toDate();
+        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
       });
-    }
 
-    document.getElementById("datePicker").addEventListener("change", (e) => {
-      renderHours(e.target.value);
+      allHours.forEach(time => {
+        const div = document.createElement("div");
+        div.className = "hour";
+        div.textContent = time;
+
+        if (booked.includes(time)) {
+          div.classList.add("booked");
+        } else {
+          div.addEventListener("click", () => {
+            document.querySelectorAll(".hour").forEach(h => h.classList.remove("selected"));
+            div.classList.add("selected");
+            selectedHour = time;
+            document.getElementById("step3").classList.add("completed");
+            document.getElementById("step4").classList.add("active");
+          });
+        }
+
+        hoursGrid.appendChild(div);
+      });
     });
 
-    document.getElementById("submitBtn").addEventListener("click", async () => {
+    submitBtn.addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
       const surname = document.getElementById("surname").value.trim();
       const phone = document.getElementById("phone").value.trim();
-      const date = document.getElementById("datePicker").value;
+      const selectedDate = dateInput.value;
+      const salon = JSON.parse(localStorage.getItem("selectedSalon"));
+      const selectedService = localStorage.getItem("selectedService") || salon?.salonCategory;
 
-      if (!name || !surname || !phone || !date || !selectedHour) {
-        alert("Tüm alanları doldurup bir saat seçmelisiniz.");
+      if (!name || !surname || !phone || phone.length !== 11 || !selectedDate || !selectedHour || !salon) {
+        alert("Lütfen tüm bilgileri doldurun ve saat seçin.");
         return;
       }
 
-      const timestamp = new Date(date + 'T' + selectedHour);
-      const data = {
-        salonId: salon.salonId || salon.id,
-        salonName: salon.salonName || salon.name,
-        salonAddress: salon.salonAddress || salon.address,
-        salonCategory: salon.salonCategory || salon.category,
-        appointmentDate: timestamp,
-        appointmentTime: selectedHour,
-        phone: phone,
-        userName: name,
-        userSurname: surname,
-        userEmail: userEmail,
-        updatedAt: new Date(),
-        service: ""
-      };
+      const appointmentDate = new Date(`${selectedDate}T${selectedHour}:00`);
 
-      if (appointmentId) {
-        await db.collection("appointments").doc(appointmentId).update(data);
-        localStorage.removeItem("editAppointmentId");
-        localStorage.removeItem("editAppointmentData");
-        alert("Randevu güncellendi.");
-      } else {
-        await db.collection("appointments").add({
-          ...data,
-          createdAt: new Date()
-        });
-        alert("Randevunuz kaydedildi.");
-      }
+      firebase.auth().onAuthStateChanged(async function(user) {
+  if (user && user.email) {
+    const data = {
+  userName: name,
+  userSurname: surname,
+  phone,
+  appointmentDate,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  salonId: salon.salonId,
+  salonName: salon.salonName,
+  salonAddress: salon.salonAddress,
+  salonCategory: salon.salonCategory,
+  service: selectedService,
+  userEmail: user.email
+};
 
-      window.location.href = "randevularim.html";
+if (randevuId) {
+  await db.collection("appointments").doc(randevuId).set(data);
+} else {
+  await db.collection("appointments").add(data);
+}
+
+    toast.style.display = "block";
+    setTimeout(() => {
+      toast.style.display = "none";
+      window.location.href = "home.html";
+    }, 2500);
+  } else {
+    alert("Kullanıcı girişi bulunamadı. Lütfen tekrar giriş yapın.");
+  }
+});
+
+
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+        window.location.href = "home.html";
+      }, 2500);
     });
-
-    window.onload = () => {
-      if (appointmentData) {
-        document.getElementById("name").value = appointmentData.userName || "";
-        document.getElementById("surname").value = appointmentData.userSurname || "";
-        document.getElementById("phone").value = appointmentData.phone || "";
-        const date = appointmentData.appointmentDate?.toDate?.()?.toISOString().slice(0, 10);
-        if (date) {
-          document.getElementById("datePicker").value = date;
-          renderHours(date); // saatleri göster
-        }
-      }
-    };
   </script>
 </body>
 </html>

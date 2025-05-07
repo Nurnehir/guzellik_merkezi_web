@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Güzellik Merkezi - Giriş</title>
+  <title>Güzellik Merkezi - Kayıt</title>
   <style>
     body {
       margin: 0;
@@ -102,21 +102,18 @@
 <body>
 
   <div class="login-container">
-    <h1>Güzellik Merkezi<br>Randevu Sistemi</h1>
+    <h1>Kayıt Ol</h1>
+
+    <input type="text" placeholder="Ad Soyad" id="name" />
     <input type="email" placeholder="E-posta" id="email" />
     <input type="password" placeholder="Şifre" id="password" />
-    <button id="loginBtn">Giriş Yap</button>
+
+    <button id="signupBtn">Kayıt Ol</button>
 
     <p class="signup-link">
-      Hesabınız yok mu? <a href="kayit.html">Kayıt Ol</a>
-    </p>
-
-    <p class="signup-link">
-      Şifrenizi mi unuttunuz? <a href="reset_password.html">Şifremi Sıfırla</a>
+      Zaten hesabınız var mı? <a href="index.html">Giriş Yap</a>
     </p>
   </div>
-
-  <div id="successMessage" class="success-message">🎉 Giriş başarılı!</div>
 
   <script type="module" src="script.js"></script>
 </body>

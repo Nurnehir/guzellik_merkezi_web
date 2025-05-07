@@ -1,55 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Salon Haritası</title>
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+    html, body { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     #controls {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 5;
-      background: white;
-      padding: 12px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 200px;
+      position: absolute; top: 20px; right: 20px; z-index: 5;
+      background: white; padding: 12px; border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex;
+      flex-direction: column; gap: 10px; width: 200px;
     }
-    #map {
-      height: 100%;
-      width: 100%;
-    }
+    #map { height: 100%; width: 100%; }
     .button {
-      padding: 10px 15px;
-      font-size: 14px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      background-color: #ccc;
-      color: black;
+      padding: 10px 15px; font-size: 14px; border: none;
+      border-radius: 20px; cursor: pointer;
+      background-color: #ccc; color: black;
       transition: background-color 0.3s;
     }
-    .button:enabled {
-      background-color: #007bff;
-      color: white;
-    }
+    .button:enabled { background-color: #007bff; color: white; }
     #selectCity {
-      padding: 8px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      padding: 8px; border-radius: 20px; border: 1px solid #ccc;
     }
   </style>
-  <!-- Firebase (non-module version) -->
+
+  <!-- ✅ Firebase SDK (FIREBASE API KEY) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
@@ -69,15 +45,15 @@
   <div id="map"></div>
 
   <script>
+    // ✅ FIREBASE CONFIG - sadece Firebase için
     const firebaseConfig = {
-      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE", // 🔐 Firebase API Key
       authDomain: "beautysalonapp-4c3af.firebaseapp.com",
       projectId: "beautysalonapp-4c3af",
       storageBucket: "beautysalonapp-4c3af.appspot.com",
       messagingSenderId: "993449779304",
       appId: "1:993449779304:web:4686572339b487b816452d"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -97,55 +73,60 @@
             center: userLocation
           });
 
-          const userMarker = new google.maps.Marker({
+          new google.maps.Marker({
             position: userLocation,
             map,
             title: "Konumunuz",
             icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
           });
 
-          loadSalons(userLocation);
+          loadSalons();
 
           document.getElementById("konumBtn").addEventListener("click", () => {
             map.setCenter(userLocation);
           });
 
           document.getElementById("randevuBtn").addEventListener("click", () => {
-  if (selectedMarkerData) {
-    localStorage.setItem("selectedSalon", JSON.stringify({
-      salonId: selectedMarkerData.id,
-      salonName: selectedMarkerData.name,
-      salonAddress: selectedMarkerData.address,
-      salonCategory: selectedMarkerData.category
-    }));
-    window.location.href = "randevuAl.html";
+            if (selectedMarkerData) {
+              localStorage.setItem("selectedSalon", JSON.stringify({
+                salonId: selectedMarkerData.id,
+                salonName: selectedMarkerData.name,
+                salonAddress: selectedMarkerData.address,
+                salonCategory: selectedMarkerData.category
+              }));
+              window.location.href = "randevuAl.html";
+            }
+          });
+
+          document.getElementById("selectCity").addEventListener("change", (e) => {
+  const cities = {
+    "Ankara": { lat: 39.9208, lng: 32.8541 },
+    "İstanbul": { lat: 41.0082, lng: 28.9784 },
+    "İzmir": { lat: 38.4192, lng: 27.1287 },
+    "Bursa": { lat: 40.1828, lng: 29.0663 },
+    "Elazığ": { lat: 38.6743, lng: 39.2220 }
+  };
+  const city = e.target.value;
+  if (cities[city]) {
+    map.setCenter(cities[city]);
+    
+    // 🔄 Seçim temizlensin
+    selectedMarkerData = null;
+    document.getElementById("randevuBtn").disabled = true;
+
+    loadSalons();
   }
 });
 
-
-          document.getElementById("selectCity").addEventListener("change", (e) => {
-            const city = e.target.value;
-            const cities = {
-              "Ankara": { lat: 39.9208, lng: 32.8541 },
-              "İstanbul": { lat: 41.0082, lng: 28.9784 },
-              "İzmir": { lat: 38.4192, lng: 27.1287 },
-              "Bursa": { lat: 40.1828, lng: 29.0663 },
-              "Elazığ": { lat: 38.6743, lng: 39.2220 }
-            };
-            if (cities[city]) {
-              map.setCenter(cities[city]);
-              loadSalons(cities[city]);
-            }
-          });
         },
         () => alert("Konum alınamadı."),
         { enableHighAccuracy: true }
       );
     }
 
-    function loadSalons(center) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const selectedCategory = urlParams.get("category");
+    function loadSalons() {
+        const selectedCategory = localStorage.getItem("selectedCategory");
+
 
       db.collection("salons").get().then(snapshot => {
         snapshot.forEach(doc => {
@@ -165,16 +146,8 @@
 
             marker.addListener("click", () => {
               infoWindow.open(map, marker);
-              selectedMarkerData = data;
+              selectedMarkerData = { ...data, id: doc.id };
               document.getElementById("randevuBtn").disabled = false;
-
-              // Marker tıklanınca salon bilgilerini localStorage'a yaz
-              localStorage.setItem("selectedSalon", JSON.stringify({
-                salonId: doc.id,
-                salonName: data.name,
-                salonAddress: data.address,
-                salonCategory: data.category
-              }));
             });
           }
         });
@@ -182,6 +155,7 @@
     }
   </script>
 
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks&callback=initMap" async defer></script>
+  <!-- ✅ GOOGLE MAPS (Maps API Key ayrı!) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI67WOYzto36RXOFb-GXCFNSu7esXvjMw&callback=initMap" async defer></script>
 </body>
 </html>

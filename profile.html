@@ -8,70 +8,82 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background-color: #fff5f7;
+      background: linear-gradient(180deg, #e3f2fd, #fce4ec);
       color: #333;
     }
-
+  
     .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 40px 20px;
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 30px 20px;
+      background-color: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(186, 104, 200, 0.2);
       text-align: center;
     }
-
+  
+    h2 {
+      background: linear-gradient(90deg, #7e57c2, #ec407a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
     .profile-icon {
-      width: 100px;
-      height: 100px;
-      background-color: #ba68c8;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #9575cd, #f48fb1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 50px;
+      font-size: 40px;
       color: white;
-      margin: 20px auto;
+      margin: 10px auto 20px;
     }
-
+  
     #user-email {
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 30px;
       color: #555;
     }
-
+  
     .menu-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background-color: #fce4ec;
       border-radius: 12px;
-      padding: 15px 20px;
+      padding: 14px 18px;
       margin: 10px 0;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s ease-in-out;
     }
-
+  
     .menu-item:hover {
-      background-color: #f8bbd0;
+      background: linear-gradient(90deg, #ba68c8, #f06292);
+      color: white;
     }
-
+  
     .menu-item i {
-      font-size: 20px;
-      color: #ba68c8;
-      margin-right: 12px;
+      font-size: 18px;
+      margin-right: 10px;
     }
-
+  
     .menu-text {
-      font-size: 16px;
+      font-size: 15px;
       flex-grow: 1;
       text-align: left;
-      color: #333;
     }
-
+  
     .arrow {
       font-size: 18px;
       color: #888;
     }
   </style>
+  
+  
 </head>
 <body>
   <div class="container">
@@ -101,21 +113,21 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-  
+
     const firebaseConfig = {
       apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
       authDomain: "beautysalonapp-4c3af.firebaseapp.com",
       projectId: "beautysalonapp-4c3af",
-      storageBucket: "beautysalonapp-4c3af.firebasestorage.app",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
       messagingSenderId: "993447977304",
       appId: "1:993447977304:web:4686572339b487b816452d",
       measurementId: "G-CQDVC8YHLP"
     };
-  
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const emailField = document.getElementById("user-email");
-  
+
     onAuthStateChanged(auth, (user) => {
       if (user && user.email) {
         emailField.innerText = user.email;
@@ -123,11 +135,12 @@
         emailField.innerText = "Giriş yapılmamış";
       }
     });
-  
+
     window.logout = function () {
       signOut(auth).then(() => {
         window.location.href = "index.html";
       });
     };
   </script>
-  
+</body>
+</html>

@@ -2,133 +2,149 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Randevularım</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #f6f3ff, #e0eafc);
-    }
-    h2 {
-      text-align: center;
-      color: #6a1b9a;
-      margin-bottom: 20px;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-    }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .info {
-      flex-grow: 1;
-    }
-    .info h3 {
-      margin: 0;
-      font-size: 18px;
+      background-color: #fef6ff;
       color: #333;
     }
-    .info p {
-      margin: 4px 0;
-      font-size: 14px;
-      color: #555;
+
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 30px 40px;
+      background-color: #fff;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(137, 90, 178, 0.25);
     }
-    .actions {
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      background: linear-gradient(90deg, #6a1b9a, #4fc3f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+    }
+
+    .randevu-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ede7f6;
+      padding: 16px 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
+    }
+
+    .randevu-info {
+      flex-grow: 1;
+    }
+
+    .randevu-info p {
+      margin: 4px 0;
+      font-size: 15px;
+    }
+
+    .randevu-actions {
       display: flex;
       gap: 10px;
     }
-    .icon-btn {
-      background: none;
+
+    .randevu-actions button {
       border: none;
+      padding: 10px 12px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 20px;
-      padding: 6px;
+      font-size: 14px;
+      color: white;
+      transition: background 0.2s;
     }
-    .icon-edit { color: #1976d2; }
-    .icon-delete { color: #e53935; }
+
+    .edit-btn {
+      background: linear-gradient(90deg, #42a5f5, #ab47bc);
+    }
+
+    .delete-btn {
+      background: linear-gradient(90deg, #ef5350, #d32f2f);
+    }
+
+    .empty {
+      text-align: center;
+      font-size: 16px;
+      color: #7b1fa2;
+    }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>Randevularım</h2>
-    <div id="appointmentList"></div>
+    <div id="randevuListesi" class="empty">Yükleniyor...</div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+
     const firebaseConfig = {
-      apiKey: "AIzaSyAvCRWQltKxgzP5T--J2KbVkPXO6S2ZSks",
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
       authDomain: "beautysalonapp-4c3af.firebaseapp.com",
-      projectId: "beautysalonapp-4c3af"
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d",
+      measurementId: "G-CQDVC8YHLP"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
-    const userEmail = localStorage.getItem("userEmail") || "nurnehir@gmail.com";
-    const container = document.getElementById("appointmentList");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const randevuListesi = document.getElementById("randevuListesi");
 
-    async function loadAppointments() {
-      const snapshot = await db.collection("appointments")
-        .where("userEmail", "==", userEmail)
-        .orderBy("appointmentDate", "desc")
-        .get();
-
-      container.innerHTML = "";
-
-      if (snapshot.empty) {
-        container.innerHTML = "<p style='text-align:center;'>Henüz randevunuz yok.</p>";
-        return;
+    onAuthStateChanged(auth, async (user) => {
+      if (user && user.email) {
+        const q = query(collection(db, "appointments"), where("userEmail", "==", user.email));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          randevuListesi.innerHTML = '<p class="empty">Henüz randevunuz bulunmamaktadır.</p>';
+        } else {
+          randevuListesi.innerHTML = "";
+          querySnapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const div = document.createElement("div");
+            div.className = "randevu-card";
+            div.innerHTML = `
+              <div class="randevu-info">
+                <p><strong>Tarih:</strong> ${new Date(data.appointmentDate?.seconds * 1000).toLocaleDateString()}</p>
+                <p><strong>Salon:</strong> ${data.salonName || "-"}</p>
+                <p><strong>Adres:</strong> ${data.salonAddress || "-"}</p>
+                <p><strong>Telefon:</strong> ${data.phone || "-"}</p>
+              </div>
+              <div class="randevu-actions">
+                <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">Randevuyu Düzenle</button>
+                <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️</button>
+              </div>
+            `;
+            randevuListesi.appendChild(div);
+          });
+        }
+      } else {
+        randevuListesi.innerHTML = '<p class="empty">Giriş yapılmamış.</p>';
       }
+    });
 
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const date = data.appointmentDate.toDate();
-        const formattedDate = date.toLocaleDateString("tr-TR");
-        const formattedTime = date.toLocaleTimeString("tr-TR", { hour: '2-digit', minute: '2-digit' });
-
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-          <div class="info">
-            <h3>${data.salonName}</h3>
-            <p><strong>Tarih:</strong> ${formattedDate} - ${formattedTime}</p>
-            <p><strong>Hizmet:</strong> ${data.service || 'Belirtilmemiş'}</p>
-          </div>
-          <div class="actions">
-            <button class="icon-btn icon-edit" title="Güncelle">&#9998;</button>
-            <button class="icon-btn icon-delete" title="Sil">&#128465;</button>
-          </div>
-        `;
-
-        div.querySelector(".icon-delete").onclick = async () => {
-          if (confirm("Bu randevuyu silmek istiyor musunuz?")) {
-            await db.collection("appointments").doc(doc.id).delete();
-            loadAppointments();
-          }
-        };
-
-        div.querySelector(".icon-edit").onclick = () => {
-          localStorage.setItem("editAppointmentId", doc.id);
-          localStorage.setItem("editAppointmentData", JSON.stringify(data));
-          window.location.href = "randevual.html";
-        };
-
-        container.appendChild(div);
-      });
-    }
-
-    loadAppointments();
+    window.silRandevu = async function(id) {
+      if (confirm("Randevuyu silmek istediğinizden emin misiniz?")) {
+        await deleteDoc(doc(db, "appointments", id));
+        alert("Randevunuz başarıyla silindi.");
+        location.reload();
+      }
+    };
   </script>
 </body>
 </html>
