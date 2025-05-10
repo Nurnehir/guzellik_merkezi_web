@@ -12,10 +12,67 @@
       padding: 40px;
       color: #333;
     }
+  .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(180deg, #ffffff, #e3f2fd);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
 
+    .navbar .left {
+      font-weight: bold;
+      color: #4a148c;
+      font-size: 18px;
+    }
+
+    .navbar .center a {
+      font-size: 17px;
+      color: #1a237e;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .center img {
+      width: 20px;
+      height: 20px;
+      margin-left: 6px;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-right: 60px;
+    }
+
+    .navbar .right a {
+      color: #1a237e;
+      text-decoration: none;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .navbar .right img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
     .container {
       max-width: 700px;
-      margin: auto;
+     margin: 100px auto 40px auto; /* 🔁 üst boşluk eklendi */
       background-color: white;
       border-radius: 16px;
       padding: 30px;
@@ -221,6 +278,17 @@
   </script>
 </head>
 <body>
+  <div class="navbar">
+    <div class="left">Hoş Geldiniz!</div>
+    <div class="center">
+      <a href="listeleme.html">Merkezler Hakkında Bilgi Edinin <img src="assets/bilgi.png" alt="Bilgi"></a>
+    </div>
+    <div class="right">
+      <a href="home.html">Ana Sayfa <img src="assets/home.png" alt="Ana Sayfa"></a>
+      <a href="profile.html">Profilim <img src="assets/user.png" alt="Profil"></a>
+      <a href="index.html">Çıkış Yap <img src="assets/logout.png" alt="Çıkış"></a>
+    </div>
+  </div>
   <div class="container">
     <h2><span id="salonTitle">Güzellik Merkezi</span> için Değerlendirme Yapın</h2>
 

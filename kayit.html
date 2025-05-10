@@ -74,27 +74,27 @@
       font-weight: bold;
     }
 
-    .success-message {
+    .popup-success {
       position: fixed;
-      top: 50%;
+      top: 20%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: #e6f4ea;
-      color: #2d6a4f;
-      padding: 18px 30px;
-      border-radius: 20px;
-      font-size: 18px;
+      background: #e3f2fd;
+      border: 1px solid #90caf9;
+      color: #0d47a1;
+      padding: 18px 28px;
+      border-radius: 12px;
       font-weight: bold;
-      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      text-align: center;
+      animation: fadeInOut 4s forwards;
       display: none;
-      z-index: 1000;
-      animation: fadeInOut 2.5s ease-in-out;
     }
 
     @keyframes fadeInOut {
       0% { opacity: 0; transform: translate(-50%, -60%); }
-      10% { opacity: 1; transform: translate(-50%, -50%); }
-      90% { opacity: 1; transform: translate(-50%, -50%); }
+      10%, 90% { opacity: 1; transform: translate(-50%, -50%); }
       100% { opacity: 0; transform: translate(-50%, -40%); }
     }
   </style>
@@ -115,6 +115,64 @@
     </p>
   </div>
 
-  <script type="module" src="script.js"></script>
+  <div id="basariMesaji" class="popup-success">✅ Kayıt başarılı! Giriş yapabilirsiniz.</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d",
+      measurementId: "G-CQDVC8YHLP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById("signupBtn").addEventListener("click", async () => {
+      const fullName = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!fullName || !email || !password) {
+        alert("Lütfen tüm alanları doldurun.");
+        return;
+      }
+
+      const [userName, ...rest] = fullName.split(" ");
+      const userSurname = rest.join(" ");
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
+
+        await setDoc(doc(db, "users", userId), {
+          userEmail: email,
+          userName: userName || "",
+          userSurname: userSurname || ""
+        });
+
+        // Başarı mesajı göster ve yönlendir
+        const mesajDiv = document.getElementById("basariMesaji");
+        mesajDiv.style.display = "block";
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 4000);
+
+      } catch (error) {
+        alert("Kayıt sırasında bir hata oluştu: " + error.message);
+        console.error(error);
+      }
+    });
+  </script>
+
 </body>
 </html>

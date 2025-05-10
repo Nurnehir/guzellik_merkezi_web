@@ -14,7 +14,7 @@
   
     .container {
       max-width: 400px;
-      margin: 60px auto;
+     margin: 100px auto 60px auto; /* üst marjin artırıldı */
       padding: 30px 20px;
       background-color: #ffffff;
       border-radius: 20px;
@@ -81,11 +81,52 @@
       font-size: 18px;
       color: #888;
     }
+    .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(180deg, #ffffff, #e3f2fd);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+.navbar .left {
+      font-weight: bold;
+      color: #4a148c;
+      font-size: 18px;
+    }
+
   </style>
+  
   
   
 </head>
 <body>
+  <div class="navbar">
+  <div class="left">Hoş Geldiniz!</div>
+  <div class="center">
+    <a href="listeleme.html" style="font-size: 17px; color: #1a237e; text-decoration: none; font-weight: 500; display: flex; align-items: center;">
+      Merkezler Hakkında Bilgi Edinin
+      <img src="assets/bilgi.png" alt="Bilgi" style="width: 20px; height: 20px; margin-left: 6px;">
+    </a>
+  </div>
+  <div class="right" style="display: flex; align-items: center; gap: 40px; margin-right: 60px;">
+    <a href="home.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+  Ana Sayfa
+  <img src="assets/home.png" alt="Ana Sayfa" style="width: 24px; height: 24px; object-fit: contain;">
+</a>
+
+    <a href="index.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+      Çıkış Yap <img src="assets/logout.png" alt="Çıkış" style="width: 26px; height: 26px; object-fit: contain;">
+    </a>
+  </div>
+</div>
+
   <div class="container">
     <h2>Profilim</h2>
     <div class="profile-icon">👤</div>
