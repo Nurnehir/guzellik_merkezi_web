@@ -13,18 +13,73 @@
       height: 100vh;
     }
 
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(180deg, #ffffff, #e3f2fd); /* beyazdan bebek mavisine geçiş */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+
+    .navbar .left {
+      font-weight: bold;
+      color: #4a148c;
+      font-size: 18px;
+    }
+
+    .navbar .center a {
+      font-size: 17px;
+      color: #1a237e; /* koyu lacivert */
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .navbar .center a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-right: 60px;
+    }
+
+    .navbar .right a {
+      color: #1a237e; /* koyu lacivert */
+      text-decoration: none;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .navbar .right img {
+      width: 26px;
+      height: 26px;
+    
+      object-fit: contain;
+    }
+    .navbar .center img {
+      width: 20px;
+      height: 20px;
+    
+      object-fit: contain;
+    }
+
     .sidebar {
       width: 240px;
       background: linear-gradient(180deg, #e3f2fd, #fce4ec);
-      padding: 30px 20px;
+      padding: 90px 20px 30px 20px;
       box-shadow: 2px 0 8px rgba(0,0,0,0.05);
-    }
-
-    .sidebar .welcome {
-      font-size: 22px;
-      font-weight: bold;
-      color: #2c3e50;
-      margin-bottom: 20px;
     }
 
     .sidebar h2 {
@@ -52,7 +107,7 @@
 
     .content {
       flex-grow: 1;
-      padding: 40px;
+      padding: 100px 40px 40px 40px;
       background-color: #fcfcfe;
     }
 
@@ -88,9 +143,9 @@
     }
 
     .map-icon {
-      background-color: #d1c4e9;
+      background-color: #fafafc;
       border-radius: 6px;
-      padding: 5px;
+      padding: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -100,9 +155,9 @@
     }
 
     .map-icon img {
-      width: 22px;
-      height: 22px;
-      object-fit: contain;
+      width: 40px;
+      height: 40px;
+      object-fit:contain
     }
 
     h3 {
@@ -111,46 +166,32 @@
       color: #6a1b9a;
     }
 
-    .logout-btn {
-      position: fixed;
-      top: 20px;
-      right: 30px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    .logout-btn img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
-
     .profile-icon {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #42a5f5, #ce93d8);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: white;
-      font-size: 24px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .profile-icon::before {
-      content: '\1F464';
+      display: none;
     }
   </style>
 </head>
 <body>
+  <div class="navbar">
+    <div class="left">Hoş Geldiniz!</div>
+    <div class="center">
+      <a href="listeleme.html">Merkezler Hakkında Bilgi Edinin 
+        <img src="assets/bilgi.png" alt="Bilgi">
+      </a>
+    </div>
+    <div class="right">
+      <a href="profile.html">
+        <span>Profilim</span>
+        <img src="assets/user.png" alt="Profil">
+      </a>
+      <a href="index.html">
+        <span>Çıkış Yap</span>
+        <img src="assets/logout.png" alt="Çıkış">
+      </a>
+    </div>
+  </div>
+
   <div class="sidebar">
-    <div class="welcome">Hoş Geldiniz!</div>
     <h2>Kategoriler</h2>
     <div class="menu-item" onclick="showServices('kuafor', this)">Kuaför</div>
     <div class="menu-item" onclick="showServices('tirnak', this)">Tırnak</div>
@@ -161,28 +202,11 @@
   </div>
 
   <div class="content">
-    <button class="logout-btn" onclick="logout()">
-      <img src="assets/logout.png" alt="Çıkış">
-    </button>
-    <div class="profile-icon" onclick="goToProfile()"></div>
     <div class="category-title">Lütfen bir kategori seçin</div>
     <div class="button-column" id="serviceContainer"></div>
   </div>
 
   <script>
-    const icons = {
-      "Saç Kesimi": "💇‍♀️", "Saç Boyama": "🎨", "Makyaj": "💄", "Kaş Alımı": "👁️", "Ombre": "🌈",
-      "Sombre": "🌤️", "Perma": "🌀", "Maşa": "🧷", "Düz Fön": "🧴", "Manikür": "💅",
-      "Pedikür": "🦶", "Jel Tırnak": "✨", "Protez Tırnak": "🔧", "Güçlendirme": "💪",
-      "Kalıcı Oje": "🖌️", "Nail Art": "🎀", "Botoks": "💉", "Dolgu": "🔮", "Kirpik Lifting": "👁️",
-      "İpek Kirpik": "🌟", "Paris Işıltısı": "✨", "Gençlik Aşısı": "💫", "Somon DNA": "🧬",
-      "Saç Mezoterapisi": "🧪", "Yüz Mezoterapisi (Mezolifting)": "🧴", "PRP Mezoterapisi": "🩸",
-      "İğnesiz Mezoterapi": "🔬", "Selülit Mezoterapisi": "🏃‍♀️", "Klasik Cilt Bakımı": "🧖‍♀️",
-      "Akne (Sivilce) Bakımı": "😶‍🌫️", "Leke Karşıtı Bakım": "☀️", "Anti-aging Bakım": "🕰️",
-      "Hydrafacial": "💧", "C Vitamini Bakımı": "🍊", "Nemlendirici Derin Bakım": "🫧",
-      "Yüz": "😊", "Kol": "💪", "Bacak": "🦵", "Tüm Vücut": "🧍"
-    };
-
     const data = {
       kuafor: ["Saç Kesimi", "Saç Boyama", "Makyaj", "Kaş Alımı", "Ombre", "Sombre", "Perma", "Maşa", "Düz Fön"],
       tirnak: ["Manikür", "Pedikür", "Jel Tırnak", "Protez Tırnak", "Güçlendirme", "Kalıcı Oje", "Nail Art"],
@@ -213,16 +237,65 @@
           parts.forEach(part => {
             const btn = document.createElement("button");
             btn.className = "service-button";
-            btn.innerHTML = `<span>${icons[part] || ''} ${part}</span><span class='map-icon' onclick="goToMap('${part}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'></span>`;
+            btn.innerHTML = `<span>${part}</span><span class='map-icon' onclick="goToMap('${part}', '${category}')"><img src='assets/konum.png' alt='Konum'></span>`;
             container.appendChild(btn);
           });
         }
       } else {
         title.textContent = `${element.textContent} Hizmetleri`;
+        const imageMap = {
+          "Klasik Cilt Bakımı": "klasik.png",
+          "Akne (Sivilce) Bakımı": "akne.png",
+          "Leke Karşıtı Bakım": "leke.png",
+          "Anti-aging Bakım": "antiaging.png",
+          "Hydrafacial": "hydrafacial.png",
+          "C Vitamini Bakımı": "cvitamini.png",
+          "Nemlendirici Derin Bakım": "nemlendirici.png",
+          "Saç Mezoterapisi": "saçmezoterapisi.png",
+          "Yüz Mezoterapisi (Mezolifting)": "yüzmezoterapisi.png",
+          "PRP Mezoterapisi": "PRP.png",
+          "İğnesiz Mezoterapi": "iğnesiz.png",
+          "Selülit Mezoterapisi": "selülit.png",
+          "Botoks": "botoks.png",
+          "Dolgu": "dolgu.png",
+          "Kirpik Lifting": "kirpiklifting.png",
+          "İpek Kirpik": "ipekkirpik.png",
+          "Paris Işıltısı": "parisışıltısı.png",
+          "Gençlik Aşısı": "gençlikaşısı.png",
+          "Somon DNA": "somondna.png",
+          "Saç Kesimi": "saçkesimi.png",
+          "Saç Boyama": "saçboyama.png",
+          "Makyaj": "makyaj.png",
+          "Kaş Alımı": "kaşalımı.png",
+          "Ombre": "ombre.png",
+          "Sombre": "sombre.png",
+          "Perma": "perma.png",
+          "Maşa": "maşa.png",
+          "Düz Fön": "düzfön.png",
+          "Manikür": "manikür.png",
+          "Pedikür": "pedikür.png",
+          "Jel Tırnak": "jeltırnak.png",
+          "Protez Tırnak": "proteztırnak.png",
+          "Güçlendirme": "güçlendirme.png",
+          "Kalıcı Oje": "kalıcıoje.png",
+          "Nail Art": "nailart.png"
+        };
+
         data[category].forEach(service => {
           const btn = document.createElement("button");
           btn.className = "service-button";
-          btn.innerHTML = `<span>${icons[service] || ''} ${service}</span><span class='map-icon' onclick="goToMap('${service}', '${category}')"><img src='assets/konum-mavi.png' alt='Konum'></span>`;
+          if (imageMap[service]) {
+            btn.innerHTML = `
+              <span style='display: flex; align-items: center; gap: 12px;'>
+                <img src='assets/${imageMap[service]}' alt='${service}' style='height: 48px; width: 48px; object-fit: cover; border-radius: 8px; margin-left: -8px;'>
+                ${service}
+              </span>
+              <span class='map-icon' onclick="goToMap('${service}', '${category}')">
+                <img src='assets/konum.png' alt='Konum'>
+              </span>`;
+          } else {
+            btn.innerHTML = `<span>${service}</span><span class='map-icon' onclick="goToMap('${service}', '${category}')"><img src='assets/konum.png' alt='Konum'></span>`;
+          }
           container.appendChild(btn);
         });
       }

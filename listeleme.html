@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listeleme - Güzellik Merkezi</title>
+  <style>
+    .container {
+  padding: 100px 40px 40px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+    .yorum-kart {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 320px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.2s ease;
+}
+
+.yorum-kart:hover {
+  transform: translateY(-4px);
+}
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8faff;
+      display: flex;
+      height: 100vh;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(180deg, #ffffff, #e3f2fd); /* beyazdan bebek mavisine geçiş */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+
+    .navbar .left {
+      font-weight: bold;
+      color: #4a148c;
+      font-size: 18px;
+    }
+
+    .navbar .center a {
+      font-size: 17px;
+      color: #1a237e; /* koyu lacivert */
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .navbar .center a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar .right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-right: 60px;
+    }
+
+    .navbar .right a {
+      color: #1a237e; /* koyu lacivert */
+      text-decoration: none;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .navbar .right img {
+      width: 26px;
+      height: 26px;
+    
+      object-fit: contain;
+    }
+    .navbar .center img {
+      width: 20px;
+      height: 20px;
+    
+      object-fit: contain;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: linear-gradient(180deg, #e3f2fd, #fce4ec);
+      padding: 90px 20px 30px 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #6a1b9a;
+    }
+
+    .menu-item {
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: linear-gradient(90deg, #90caf9, #f48fb1);
+      color: white;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 100px 40px 40px 40px;
+      background-color: #fcfcfe;
+    }
+
+    .category-title {
+      font-size: 28px;
+      color: #7e57c2;
+      margin-bottom: 25px;
+    }
+
+    .button-column {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .service-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background-color: #ffffff;
+      border: 1px solid #e1bee7;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .service-button:hover {
+      background: linear-gradient(90deg, #bbdefb, #f8bbd0);
+      color: #263238;
+    }
+
+    .map-icon {
+      background-color: #fafafc;
+      border-radius: 6px;
+      padding: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+    }
+
+    .map-icon img {
+      width: 40px;
+      height: 40px;
+      object-fit:contain
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-top: 30px;
+      color: #6a1b9a;
+    }
+
+    .profile-icon {
+      display: none;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="left">Hoş Geldiniz!</div>
+    <div class="center">
+      <a href="listeleme.html">Merkezler Hakkında Bilgi Edinin 
+        <img src="assets/bilgi.png" alt="Bilgi">
+      </a>
+    </div>
+    <div class="right">
+        <a href="home.html">
+            <span> Ana Sayfa</span>
+          </a>
+      <a href="profile.html">
+        <span>Profilim</span>
+        <img src="assets/user.png" alt="Profil">
+      </a>
+      <a href="index.html">
+        <span>Çıkış Yap</span>
+        <img src="assets/logout.png" alt="Çıkış">
+      </a>
+    </div>
+  </div>
+
+  <div class="container" id="yorumListesi"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadYorumlar() {
+      const querySnapshot = await getDocs(collection(db, "comments"));
+      const container = document.getElementById("yorumListesi");
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const card = document.createElement("div");
+        card.className = "yorum-kart";
+        card.innerHTML = `
+          <h3>${data.salonAdi}</h3>
+         <p><strong>Kullanıcı:</strong> ${data.userName || ''} ${data.userSurname || ''}</p>
+          <p><strong>Yorum:</strong> ${data.yorum}</p>
+          <p class="puan">${'⭐'.repeat(data.puan)}</p>
+          <p style="font-size: 12px; color: #777;">${data.tarih?.seconds ? new Date(data.tarih.seconds * 1000).toLocaleDateString("tr-TR") : ''}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    loadYorumlar();
+  </script>
+</body>
+</html>

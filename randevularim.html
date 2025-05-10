@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Randevularım</title>
   <style>
+    
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background-color: #fef6ff;
+      background-color: #dceefb;
       color: #333;
     }
 
@@ -22,23 +23,24 @@
     }
 
     h2 {
-      text-align: center;
-      font-size: 28px;
-      background: linear-gradient(90deg, #6a1b9a, #4fc3f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 40px;
-    }
+  text-align: center;
+  font-size: 28px;
+  background: linear-gradient(90deg, #6a1b9a, #4fc3f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
     .randevu-card {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #ede7f6;
+      background: #ffeafa;
       padding: 16px 20px;
       border-radius: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(103, 58, 183, 0.15);
+      box-shadow: 0 4px 12px rgba(39, 196, 159, 0.15);
     }
 
     .randevu-info {
@@ -66,11 +68,11 @@
     }
 
     .edit-btn {
-      background: linear-gradient(90deg, #42a5f5, #ab47bc);
+      background: linear-gradient(90deg, #71c4f1, #fbb3ee);
     }
 
     .delete-btn {
-      background: linear-gradient(90deg, #ef5350, #d32f2f);
+      background: linear-gradient(90deg, #ef5350, #f5cece);
     }
 
     .empty {
@@ -125,10 +127,14 @@
                 <p><strong>Adres:</strong> ${data.salonAddress || "-"}</p>
                 <p><strong>Telefon:</strong> ${data.phone || "-"}</p>
               </div>
-              <div class="randevu-actions">
-                <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">Randevuyu Düzenle</button>
-                <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️</button>
-              </div>
+            <div class="randevu-actions">
+  <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">✏️</button>
+  <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️</button>
+<button class="edit-btn" onclick="window.location.href='yorumlar.html?salonId=${data.salonId}&salonAdi=${encodeURIComponent(data.salonName)}&userName=${encodeURIComponent(data.userName)}&userSurname=${encodeURIComponent(data.userSurname)}'">⭐</button>
+
+
+</div>
+
             `;
             randevuListesi.appendChild(div);
           });
