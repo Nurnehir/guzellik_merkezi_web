@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Paneli</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom, #e3f2fd, #fce4ec);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #6a1b9a;
+      margin-bottom: 40px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #5e35b1;
+      border-bottom: 2px solid #d1c4e9;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      margin-bottom: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .card p {
+      margin: 6px 0;
+    }
+
+    .delete-btn {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+
+    .delete-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Admin Paneli</h1>
+
+  <div class="section" id="appointments">
+    <div class="section-title">📅 Randevular</div>
+  </div>
+
+  <div class="section" id="comments">
+    <div class="section-title">⭐ Yorumlar</div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d",
+      measurementId: "G-CQDVC8YHLP"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function loadAppointments() {
+      db.collection("appointments").onSnapshot(snapshot => {
+        const container = document.getElementById("appointments");
+        container.innerHTML = '<div class="section-title">📅 Randevular</div>';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML =
+            "<p><strong>" + data.userName + " " + data.userSurname + "</strong> - " + data.phone + "</p>" +
+            "<p>📍 " + data.salonName + " - " + data.salonAddress + "</p>" +
+            "<p>🗓 " + new Date(data.appointmentDate.seconds * 1000).toLocaleString() + "</p>" +
+            "<p>💇 Hizmet: " + data.service + "</p>" +
+            "<button class='delete-btn' onclick=\"deleteAppointment('" + doc.id + "')\">Sil</button>";
+          container.appendChild(card);
+        });
+      });
+    }
+
+    function deleteAppointment(id) {
+      db.collection("appointments").doc(id).delete();
+    }
+
+    function loadComments() {
+      db.collection("comments").onSnapshot(snapshot => {
+        const container = document.getElementById("comments");
+        container.innerHTML = '<div class="section-title">⭐ Yorumlar</div>';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML =
+            "<p><strong>" + data.userName + " " + data.userSurname + "</strong></p>" +
+            "<p>🏢 " + data.salonAdi + "</p>" +
+            "<p>⭐ " + data.puan + "</p>" +
+            "<p>💬 " + data.yorum + "</p>" +
+            "<button class='delete-btn' onclick=\"deleteComment('" + doc.id + "')\">Sil</button>";
+          container.appendChild(card);
+        });
+      });
+    }
+
+    function deleteComment(id) {
+      db.collection("comments").doc(id).delete();
+    }
+
+    loadAppointments();
+    loadComments();
+  </script>
+</body>
+</html>

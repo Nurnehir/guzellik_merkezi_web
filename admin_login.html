@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Güzellik Merkezi - Giriş</title>
+  <title>Admin Girişi</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -63,17 +67,6 @@
       opacity: 0.9;
     }
 
-    .signup-link {
-      margin-top: 16px;
-      font-size: 14px;
-    }
-
-    .signup-link a {
-      color: #6a1b9a;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
     .success-message {
       position: fixed;
       top: 50%;
@@ -97,49 +90,51 @@
       90% { opacity: 1; transform: translate(-50%, -50%); }
       100% { opacity: 0; transform: translate(-50%, -40%); }
     }
-    .admin-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  font-size: 15px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #ba68c8, #9575cd);
-  color: white;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.admin-button:hover {
-  opacity: 0.9;
-}
-
   </style>
 </head>
 <body>
 
   <div class="login-container">
-    <h1>Güzellik Merkezi<br>Randevu Sistemi</h1>
-    <input type="email" placeholder="E-posta" id="email" />
-    <input type="password" placeholder="Şifre" id="password" />
-    <button id="loginBtn">Giriş Yap</button>
-
-    <p class="signup-link">
-      Hesabınız yok mu? <a href="kayit.html">Kayıt Ol</a>
-    </p>
-
-    <p class="signup-link">
-      Şifrenizi mi unuttunuz? <a href="reset_password.html">Şifremi Sıfırla</a>
-    </p>
-    <button class="admin-button" onclick="window.location.href='admin_login.html'">
-  🔐 Admin Girişi
-</button>
-
+    <h1>Admin Girişi</h1>
+    <input type="email" id="email" placeholder="Admin Email" />
+    <input type="password" id="password" placeholder="Şifre" />
+    <button onclick="login()">Giriş Yap</button>
   </div>
 
-  <div id="successMessage" class="success-message">🎉 Giriş başarılı!</div>
+  <div class="success-message" id="successMessage">Giriş Başarılı, yönlendiriliyorsunuz...</div>
 
-  <script type="module" src="script.js"></script>
+  <script>
+   const firebaseConfig = {
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
+      authDomain: "beautysalonapp-4c3af.firebaseapp.com",
+      projectId: "beautysalonapp-4c3af",
+      storageBucket: "beautysalonapp-4c3af.appspot.com",
+      messagingSenderId: "993447977304",
+      appId: "1:993447977304:web:4686572339b487b816452d",
+      measurementId: "G-CQDVC8YHLP"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          if (email === 'admin@gmail.com') {
+            document.getElementById("successMessage").style.display = "block";
+            setTimeout(() => {
+              window.location.href = "admin_panel.html";
+            }, 2000);
+          } else {
+            alert("Bu kullanıcı admin değil!");
+          }
+        })
+        .catch((error) => {
+          alert("Hata: " + error.message);
+        });
+    }
+  </script>
+
 </body>
 </html>
