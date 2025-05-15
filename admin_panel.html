@@ -45,20 +45,107 @@
       margin: 6px 0;
     }
 
-    .delete-btn {
-      background-color: #e53935;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      position: absolute;
-      top: 16px;
-      right: 16px;
+    .button-group {
+      margin-top: 10px;
     }
 
-    .delete-btn:hover {
-      opacity: 0.9;
+    .btn {
+      padding: 8px 12px;
+      margin-right: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .approve-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .reject-btn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #9e9e9e;
+      color: white;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 6px 10px;
+      display: inline-block;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+
+    .status.pending {
+      background-color: #fff9c4;
+      color: #f57f17;
+    }
+
+    .status.approved {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .status.rejected {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+
+    .toast {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-size: 18px;
+      color: white;
+      background-color: #4caf50;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999;
+      display: none;
+      animation: fadein 0.3s, fadeout 0.3s 2.7s;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    @keyframes fadeout {
+      from { opacity: 1; transform: translate(-50%, -50%); }
+      to { opacity: 0; transform: translate(-50%, -60%); }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 24px 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 320px;
+    }
+
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
     }
   </style>
 </head>
@@ -74,6 +161,19 @@
     <div class="section-title">⭐ Yorumlar</div>
   </div>
 
+  <div id="toast" class="toast"></div>
+
+  <!-- Silme Onay Modalı -->
+  <div id="confirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p>Bu randevuyu silmek istediğinize emin misiniz?</p>
+      <div class="modal-buttons">
+        <button class="btn reject-btn" onclick="confirmDelete()">Sil</button>
+        <button class="btn delete-btn" onclick="closeModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
@@ -81,34 +181,86 @@
       projectId: "beautysalonapp-4c3af",
       storageBucket: "beautysalonapp-4c3af.appspot.com",
       messagingSenderId: "993447977304",
-      appId: "1:993447977304:web:4686572339b487b816452d",
-      measurementId: "G-CQDVC8YHLP"
+      appId: "1:993447977304:web:4686572339b487b816452d"
     };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    let appointmentToDeleteId = null;
+
+    function deleteAppointment(id) {
+      appointmentToDeleteId = id;
+      document.getElementById("confirmModal").style.display = "flex";
+    }
+
+    function confirmDelete() {
+      if (!appointmentToDeleteId) return;
+
+      db.collection("appointments").doc(appointmentToDeleteId).delete().then(() => {
+        showToast("🗑️ Randevu silindi", "#9e9e9e");
+        closeModal();
+      });
+
+      appointmentToDeleteId = null;
+    }
+
+    function closeModal() {
+      document.getElementById("confirmModal").style.display = "none";
+    }
+
+    function updateStatus(id, status) {
+      db.collection("appointments").doc(id).update({ status: status }).then(() => {
+        const msg = (status === "approved")
+          ? "✅ Randevu onaylandı"
+          : "❌ Randevu reddedildi";
+        const color = (status === "approved") ? "#4caf50" : "#f44336";
+        showToast(msg, color);
+      });
+    }
+
+    function showToast(text, color) {
+      const toast = document.getElementById("toast");
+      toast.style.backgroundColor = color;
+      toast.innerText = text;
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+    }
+
     function loadAppointments() {
-      db.collection("appointments").onSnapshot(snapshot => {
+      db.collection("appointments").orderBy("appointmentDate", "desc").onSnapshot(snapshot => {
         const container = document.getElementById("appointments");
         container.innerHTML = '<div class="section-title">📅 Randevular</div>';
         snapshot.forEach(doc => {
           const data = doc.data();
           const card = document.createElement("div");
           card.className = "card";
-          card.innerHTML =
-            "<p><strong>" + data.userName + " " + data.userSurname + "</strong> - " + data.phone + "</p>" +
-            "<p>📍 " + data.salonName + " - " + data.salonAddress + "</p>" +
-            "<p>🗓 " + new Date(data.appointmentDate.seconds * 1000).toLocaleString() + "</p>" +
-            "<p>💇 Hizmet: " + data.service + "</p>" +
-            "<button class='delete-btn' onclick=\"deleteAppointment('" + doc.id + "')\">Sil</button>";
+          const dateStr = data.appointmentDate?.seconds
+            ? new Date(data.appointmentDate.seconds * 1000).toLocaleString()
+            : "Tarih yok";
+
+          const status = data.status || "pending";
+          let statusText = "Durum: Beklemede";
+          if (status === "approved") statusText = "Durum: Onaylandı";
+          else if (status === "rejected") statusText = "Durum: Reddedildi";
+
+          card.innerHTML = `
+            <p><strong>${data.userName || ''} ${data.userSurname || ''}</strong> - ${data.phone || ''}</p>
+            <p>📍 ${data.salonName || ''} - ${data.salonAddress || ''}</p>
+            <p>🗓 ${dateStr}</p>
+            <p>💇 Hizmet: ${data.service || ''}</p>
+            <p class="status ${status}">${statusText}</p>
+            <div class="button-group">
+              <button class="btn approve-btn" onclick="updateStatus('${doc.id}', 'approved')">Onayla</button>
+              <button class="btn reject-btn" onclick="updateStatus('${doc.id}', 'rejected')">Reddet</button>
+              <button class="btn delete-btn" onclick="deleteAppointment('${doc.id}')">Sil</button>
+            </div>
+          `;
           container.appendChild(card);
         });
       });
-    }
-
-    function deleteAppointment(id) {
-      db.collection("appointments").doc(id).delete();
     }
 
     function loadComments() {
@@ -119,19 +271,15 @@
           const data = doc.data();
           const card = document.createElement("div");
           card.className = "card";
-          card.innerHTML =
-            "<p><strong>" + data.userName + " " + data.userSurname + "</strong></p>" +
-            "<p>🏢 " + data.salonAdi + "</p>" +
-            "<p>⭐ " + data.puan + "</p>" +
-            "<p>💬 " + data.yorum + "</p>" +
-            "<button class='delete-btn' onclick=\"deleteComment('" + doc.id + "')\">Sil</button>";
+          card.innerHTML = `
+            <p><strong>${data.userName || ''} ${data.userSurname || ''}</strong></p>
+            <p>🏢 ${data.salonAdi || ''}</p>
+            <p>⭐ ${data.puan || ''}</p>
+            <p>💬 ${data.yorum || ''}</p>
+          `;
           container.appendChild(card);
         });
       });
-    }
-
-    function deleteComment(id) {
-      db.collection("comments").doc(id).delete();
     }
 
     loadAppointments();

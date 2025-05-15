@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Randevularım</title>
   <style>
-    
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
@@ -23,14 +22,13 @@
     }
 
     h2 {
-  text-align: center;
-  font-size: 28px;
-  background: linear-gradient(90deg, #6e279a, #3d1b80);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
+      text-align: center;
+      font-size: 28px;
+      background: linear-gradient(90deg, #6e279a, #3d1b80);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     .randevu-card {
       display: flex;
@@ -54,7 +52,9 @@
 
     .randevu-actions {
       display: flex;
+      flex-direction: column;
       gap: 10px;
+      align-items: flex-end;
     }
 
     .randevu-actions button {
@@ -75,26 +75,52 @@
       background: linear-gradient(90deg, #fab8c4, #fcbdc6);
     }
 
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status-approved {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .status-rejected {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+
     .empty {
       text-align: center;
       font-size: 16px;
       color: #7b1fa2;
     }
+
     .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: linear-gradient(180deg, #ffffff, #e3f2fd);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  z-index: 1000;
-}
-.navbar .left {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(180deg, #ffffff, #e3f2fd);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+
+    .navbar .left {
       font-weight: bold;
       color: #4a148c;
       font-size: 18px;
@@ -103,27 +129,26 @@
 </head>
 <body>
   <div class="navbar">
-  <div class="left">Hoş Geldiniz!</div>
-  <div class="center">
-    <a href="listeleme.html" style="font-size: 17px; color: #1a237e; text-decoration: none; font-weight: 500; display: flex; align-items: center;">
-      Merkezler Hakkında Bilgi Edinin
-      <img src="assets/bilgi.png" alt="Bilgi" style="width: 20px; height: 20px; margin-left: 6px;">
-    </a>
+    <div class="left">Hoş Geldiniz!</div>
+    <div class="center">
+      <a href="listeleme.html" style="font-size: 17px; color: #1a237e; text-decoration: none; font-weight: 500; display: flex; align-items: center;">
+        Merkezler Hakkında Bilgi Edinin
+        <img src="assets/bilgi.png" alt="Bilgi" style="width: 20px; height: 20px; margin-left: 6px;">
+      </a>
+    </div>
+    <div class="right" style="display: flex; align-items: center; gap: 40px; margin-right: 60px;">
+      <a href="home.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+        Ana Sayfa
+        <img src="assets/home.png" alt="Ana Sayfa" style="width: 24px; height: 24px; object-fit: contain;">
+      </a>
+      <a href="profile.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+        Profilim <img src="assets/user.png" alt="Profil" style="width: 26px; height: 26px; object-fit: contain;">
+      </a>
+      <a href="index.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+        Çıkış Yap <img src="assets/logout.png" alt="Çıkış" style="width: 26px; height: 26px; object-fit: contain;">
+      </a>
+    </div>
   </div>
-  <div class="right" style="display: flex; align-items: center; gap: 40px; margin-right: 60px;">
-    <a href="home.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-  Ana Sayfa
-  <img src="assets/home.png" alt="Ana Sayfa" style="width: 24px; height: 24px; object-fit: contain;">
-</a>
-
-    <a href="profile.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-      Profilim <img src="assets/user.png" alt="Profil" style="width: 26px; height: 26px; object-fit: contain;">
-    </a>
-    <a href="index.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-      Çıkış Yap <img src="assets/logout.png" alt="Çıkış" style="width: 26px; height: 26px; object-fit: contain;">
-    </a>
-  </div>
-</div>
 
   <div class="container">
     <h2>Randevularım</h2>
@@ -162,21 +187,30 @@
             const data = docSnap.data();
             const div = document.createElement("div");
             div.className = "randevu-card";
+
+            let statusClass = "status-pending";
+            let statusText = "⏳ Onay bekleniyor";
+            if (data.status === "approved") {
+              statusClass = "status-approved";
+              statusText = "✅ Randevunuz onaylandı";
+            } else if (data.status === "rejected") {
+              statusClass = "status-rejected";
+              statusText = "❌ Randevunuz reddedildi";
+            }
+
             div.innerHTML = `
               <div class="randevu-info">
                 <p><strong>Tarih:</strong> ${new Date(data.appointmentDate?.seconds * 1000).toLocaleDateString()}</p>
                 <p><strong>Salon:</strong> ${data.salonName || "-"}</p>
                 <p><strong>Adres:</strong> ${data.salonAddress || "-"}</p>
                 <p><strong>Telefon:</strong> ${data.phone || "-"}</p>
+                <p class="status-badge ${statusClass}">${statusText}</p>
               </div>
-            <div class="randevu-actions">
-  <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">✏️</button>
-  <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️</button>
-<button class="edit-btn" onclick="window.location.href='yorumlar.html?salonId=${data.salonId}&salonAdi=${encodeURIComponent(data.salonName)}&userName=${encodeURIComponent(data.userName)}&userSurname=${encodeURIComponent(data.userSurname)}'">⭐</button>
-
-
-</div>
-
+              <div class="randevu-actions">
+                <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">✏️</button>
+                <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️</button>
+                <button class="edit-btn" onclick="window.location.href='yorumlar.html?salonId=${data.salonId}&salonAdi=${encodeURIComponent(data.salonName)}&userName=${encodeURIComponent(data.userName)}&userSurname=${encodeURIComponent(data.userSurname)}'">⭐</button>
+              </div>
             `;
             randevuListesi.appendChild(div);
           });

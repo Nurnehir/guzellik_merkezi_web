@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estetik Salon - Hoş Geldiniz</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #f7f7f7, #ffe4f0);
+      color: #333;
+      scroll-behavior: smooth;
+    }
+    header {
+      background: #fff;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    nav a {
+      margin: 0 16px;
+      text-decoration: none;
+      color: #8e24aa;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .login-btn {
+      background: linear-gradient(to right, #a64ac9, #f06292);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 80px 100px 160px;
+      background-color: #f6f7f8;
+      flex-wrap: wrap;
+    }
+    .hero-text {
+      max-width: 900px;
+    }
+    .hero-text h1 {
+      font-size: 42px;
+      color: #880e84;
+    }
+    .hero-text p {
+      margin-top: 18px;
+      font-size: 20px;
+      color: #555;
+    }
+    .hero-images-combined {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-images-combined img:first-child {
+      width: 240px;
+      height: 260px;
+      border-radius: 50%;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      background-color: white;
+      z-index: 2;
+      position: relative;
+    }
+    .hero-images-combined img:last-child {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      position: absolute;
+      left: 160px;
+      top: 60px;
+      z-index: 1;
+      opacity: 0.92;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    }
+    section.info {
+      padding: 60px 100px;
+      background: #fff;
+      display: none;
+    }
+    section.info.active {
+      display: block;
+    }
+    section.info h2 {
+      font-size: 28px;
+      color: #6a1b9a;
+      margin-bottom: 20px;
+    }
+    section.info p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px;
+      }
+      .hero-text {
+        max-width: 100%;
+        margin-bottom: 40px;
+      }
+      .hero-images-combined {
+        flex-direction: column;
+      }
+      .hero-images-combined img:first-child,
+      .hero-images-combined img:last-child {
+        width: 160px;
+        height: 160px;
+        position: static;
+      }
+      section.info {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('section.info').forEach(section => {
+        section.classList.remove('active');
+      });
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active');
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }, 50);
+      }
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a onclick="showSection('hakkimizda')">Hakkımızda</a>
+      <a onclick="showSection('hizmetler')">Hizmetlerimiz</a>
+      <a onclick="showSection('iletisim')">İletişim</a>
+    </nav>
+    <a class="login-btn" href="index.html">Giriş Yap</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-images-combined">
+      <img src="assets/logo2.png" alt="Kadın Portresi">
+      <img src="assets/logo.png" alt="Bakım Ürünleri">
+    </div>
+    <div class="hero-text">
+      <h1>Saç & Güzellik</h1>
+      <p>Size özel bakım ve güzellik hizmetlerimizle tanışın. Hemen rezervasyon oluşturun.</p>
+    </div>
+  </section>
+
+  <section id="hakkimizda" class="info">
+    <h2>Hakkımızda</h2>
+    <p>Güzellik Merkezi Randevu Sistemi, 2025 yılının Mart ayında kurulmuştur. Kurulma amacımız, güzellik ve bakım için gideceğiniz güzellik markezleri ve kuaförlerde bekleme-arama gibi zorlukları yaşamadan randevu sistemimizle kaliteli hizmetleri sunmayı hedefliyoruz. Sizi hiç yormadan en yakınızdaki merkezleri göstererek doluluk boşluk saatlerine göre randevu alabilmenizi sağlıyoruz.Tabii müşteri memnuniyetini de ön planda tutuyor, değerlendirmenize de imkan sunuyoruz. Zamanınız kıymetli, biz de sizin kıymetli hissetmeniz için çalışıyoruz.</p>
+  </section>
+
+  <section id="hizmetler" class="info">
+    <h2>Hizmetlerimiz</h2>
+    <p>• Cilt bakımı ve gençleştirme uygulamaları<br>• Lazer epilasyon hizmetleri<br>• Profesyonel makyaj<br>• Manikür, pedikür, tırnak işlemleri ve sanatları<br>• Saç kesimi, saç boyama ve şekillendirme işlemleri<br>•Mezoterapi ve PRP işlemleri<br>•Dolgu, botoks uygulamaları<br>•Kirpik yapımı ve kaş alım işlemleri</p>
+  </section>
+
+  <section id="iletisim" class="info">
+    <h2>İletişim</h2>
+    <p><strong>Telefon:</strong> +90 543 640 30 23<br>
+       <strong>Adres:</strong> Cumhuriyet Mahallesi Hürmetli Sokak Bilter Apartmanı No:3/7, Elazığ Merkez, Türkiye<br>
+       <strong>E-posta:</strong> nurnehirarca@gmail.com</p>
+  </section>
+</body>
+</html>
