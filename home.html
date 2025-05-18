@@ -304,7 +304,9 @@
     function goToMap(service, category) {
       localStorage.setItem("selectedService", service);
       localStorage.setItem("selectedCategory", category);
-      window.location.href = `map.html`;
+      window.location.href = `oneri.html?cat=${category}`;
+
+
     }
 
     function logout() {
