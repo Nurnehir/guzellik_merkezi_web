@@ -8,7 +8,7 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: linear-gradient(180deg, #e3f2fd, #fce4ec);
+      background: linear-gradient(180deg, #fcfdfd, #fcfcfc);
       color: #333;
     }
   
@@ -55,7 +55,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background-color: #fce4ec;
+      background-color: #efdaeb;
       border-radius: 12px;
       padding: 14px 18px;
       margin: 10px 0;
@@ -88,20 +88,60 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
-  background: linear-gradient(180deg, #ffffff, #e3f2fd);
+  height: 64px;
+  background: linear-gradient(90deg, #f1efef, #ecf6f9); /* home.html'deki geçiş */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0 16px;
+  border-bottom: 2px solid #d1c4e9;
+  border-style: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   z-index: 1000;
+  box-sizing: border-box;
+   overflow-x: hidden;
 }
+
 .navbar .left {
-      font-weight: bold;
-      color: #4a148c;
-      font-size: 18px;
-    }
+  font-weight: 600;
+  color: #4a148c;
+  font-size: 20px;
+}
+
+.navbar .center a {
+  font-size: 16px;
+  color: #1a237e;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar .right {
+  display: flex;
+  align-items: center;
+    gap: 20px; 
+  flex-shrink: 0;
+}
+
+.navbar .right a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: #1a237e;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.navbar img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
 
   </style>
   
@@ -109,25 +149,30 @@
   
 </head>
 <body>
-  <div class="navbar">
+ <div class="navbar">
   <div class="left">Hoş Geldiniz!</div>
+
   <div class="center">
-    <a href="listeleme.html" style="font-size: 17px; color: #1a237e; text-decoration: none; font-weight: 500; display: flex; align-items: center;">
+    <a href="listeleme.html">
       Merkezler Hakkında Bilgi Edinin
-      <img src="assets/bilgi.png" alt="Bilgi" style="width: 20px; height: 20px; margin-left: 6px;">
+      <img src="assets/bilgi.png" alt="Bilgi">
     </a>
   </div>
-  <div class="right" style="display: flex; align-items: center; gap: 40px; margin-right: 60px;">
-    <a href="home.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-  Ana Sayfa
-  <img src="assets/home.png" alt="Ana Sayfa" style="width: 24px; height: 24px; object-fit: contain;">
-</a>
 
-    <a href="index.html" style="color: #1a237e; text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-      Çıkış Yap <img src="assets/logout.png" alt="Çıkış" style="width: 26px; height: 26px; object-fit: contain;">
+  <div class="right">
+    <a href="home.html">
+      <span>Ana Sayfa</span>
+      <img src="assets/home.png" alt="Ana Sayfa">
+    </a>
+  
+    <a href="index.html">
+      <span>Çıkış Yap</span>
+      <img src="assets/logout.png" alt="Çıkış">
     </a>
   </div>
 </div>
+
+
 
   <div class="container">
     <h2>Profilim</h2>

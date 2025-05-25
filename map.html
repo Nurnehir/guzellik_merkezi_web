@@ -25,7 +25,7 @@
     }
   </style>
 
-  <!-- ✅ Firebase SDK (FIREBASE API KEY) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
@@ -45,9 +45,8 @@
   <div id="map"></div>
 
   <script>
-    // ✅ FIREBASE CONFIG - sadece Firebase için
     const firebaseConfig = {
-      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE", // 🔐 Firebase API Key
+      apiKey: "AIzaSyDJirw-mDrefZho9wn1WqcC0n2H45Oa8FE",
       authDomain: "beautysalonapp-4c3af.firebaseapp.com",
       projectId: "beautysalonapp-4c3af",
       storageBucket: "beautysalonapp-4c3af.appspot.com",
@@ -61,6 +60,12 @@
     let map;
 
     function initMap() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const latParam = parseFloat(urlParams.get("lat"));
+      const lngParam = parseFloat(urlParams.get("lng"));
+      const directLocation = latParam && lngParam ? { lat: latParam, lng: lngParam } : null;
+      const urlCategory = urlParams.get("category"); // 👈 Yeni kategori bilgisi
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const userLocation = {
@@ -69,8 +74,8 @@
           };
 
           map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 13,
-            center: userLocation
+            zoom: directLocation ? 16 : 13,
+            center: directLocation || userLocation
           });
 
           new google.maps.Marker({
@@ -80,7 +85,16 @@
             icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
           });
 
-          loadSalons();
+          if (directLocation) {
+            new google.maps.Marker({
+              position: directLocation,
+              map,
+              title: "Seçilen Salon",
+              icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            });
+          }
+
+          loadSalons(urlCategory);
 
           document.getElementById("konumBtn").addEventListener("click", () => {
             map.setCenter(userLocation);
@@ -99,40 +113,37 @@
           });
 
           document.getElementById("selectCity").addEventListener("change", (e) => {
-  const cities = {
-    "Ankara": { lat: 39.9208, lng: 32.8541 },
-    "İstanbul": { lat: 41.0082, lng: 28.9784 },
-    "İzmir": { lat: 38.4192, lng: 27.1287 },
-    "Bursa": { lat: 40.1828, lng: 29.0663 },
-    "Elazığ": { lat: 38.6743, lng: 39.2220 }
-  };
-  const city = e.target.value;
-  if (cities[city]) {
-    map.setCenter(cities[city]);
-    
-    // 🔄 Seçim temizlensin
-    selectedMarkerData = null;
-    document.getElementById("randevuBtn").disabled = true;
-
-    loadSalons();
-  }
-});
-
+            const cities = {
+              "Ankara": { lat: 39.9208, lng: 32.8541 },
+              "İstanbul": { lat: 41.0082, lng: 28.9784 },
+              "İzmir": { lat: 38.4192, lng: 27.1287 },
+              "Bursa": { lat: 40.1828, lng: 29.0663 },
+              "Elazığ": { lat: 38.6743, lng: 39.2220 }
+            };
+            const city = e.target.value;
+            if (cities[city]) {
+              map.setCenter(cities[city]);
+              selectedMarkerData = null;
+              document.getElementById("randevuBtn").disabled = true;
+              loadSalons(urlCategory); // 👈 Şehir seçilince de kategori korunur
+            }
+          });
         },
         () => alert("Konum alınamadı."),
         { enableHighAccuracy: true }
       );
     }
 
-    function loadSalons() {
-        const selectedCategory = localStorage.getItem("selectedCategory");
-
+    function loadSalons(urlCategory) {
+      const selectedCategory = localStorage.getItem("selectedCategory");
 
       db.collection("salons").get().then(snapshot => {
         snapshot.forEach(doc => {
           const data = doc.data();
-          const isKuafor = selectedCategory === "kuafor" && data.category === "Kuaför";
-          const isGuzellik = selectedCategory !== "kuafor" && data.category === "Güzellik Merkezi";
+
+          // ✅ Yeni filtreleme: hem URL'den hem localStorage'tan gelen kategoriye göre
+          const isKuafor = (selectedCategory === "kuafor" || urlCategory === "Kuaför") && data.category === "Kuaför";
+          const isGuzellik = (selectedCategory !== "kuafor" || urlCategory === "Güzellik Merkezi") && data.category === "Güzellik Merkezi";
 
           if ((isKuafor || isGuzellik) && data.latitude && data.longitude) {
             const marker = new google.maps.Marker({
@@ -155,7 +166,6 @@
     }
   </script>
 
-  <!-- ✅ GOOGLE MAPS (Maps API Key ayrı!) -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDI67WOYzto36RXOFb-GXCFNSu7esXvjMw&callback=initMap" async defer></script>
 </body>
 </html>

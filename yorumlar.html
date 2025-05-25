@@ -12,64 +12,70 @@
       padding: 40px;
       color: #333;
     }
-  .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background: linear-gradient(180deg, #ffffff, #e3f2fd);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      z-index: 1000;
-    }
+ .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: linear-gradient(90deg, #f1efef, #ecf6f9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 2px solid #d1c4e9;
+  border-style: inherit;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  box-sizing: border-box;
+}
 
-    .navbar .left {
-      font-weight: bold;
-      color: #4a148c;
-      font-size: 18px;
-    }
+.navbar .left {
+  font-weight: 600;
+  color: #4a148c;
+  font-size: 20px;
+}
 
-    .navbar .center a {
-      font-size: 17px;
-      color: #1a237e;
-      text-decoration: none;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-    }
+.navbar .center a {
+  font-size: 16px;
+  color: #1a237e;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-    .navbar .center img {
-      width: 20px;
-      height: 20px;
-      margin-left: 6px;
-    }
+.navbar .center img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 
-    .navbar .right {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      margin-right: 60px;
-    }
+.navbar .right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
 
-    .navbar .right a {
-      color: #1a237e;
-      text-decoration: none;
-      font-size: 17px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 500;
-    }
+.navbar .right a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: #1a237e;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
 
-    .navbar .right img {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-    }
+.navbar img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
     .container {
       max-width: 700px;
      margin: 100px auto 40px auto; /* 🔁 üst boşluk eklendi */

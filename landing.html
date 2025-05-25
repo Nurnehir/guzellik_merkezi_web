@@ -141,6 +141,16 @@
         }, 50);
       }
     }
+   
+  // Sayfa yüklenince URL'deki #hakkimizda, #hizmetler veya #iletisim varsa ilgili bölümü otomatik göster
+  window.addEventListener("DOMContentLoaded", () => {
+    const hash = window.location.hash?.replace("#", "");
+    if (["hakkimizda", "hizmetler", "iletisim"].includes(hash)) {
+      showSection(hash);
+    }
+  });
+
+
   </script>
 </head>
 <body>
