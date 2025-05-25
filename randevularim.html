@@ -279,7 +279,13 @@
               </div>
               <div class="randevu-actions">
                 <button class="edit-btn" onclick="window.location.href='randevual.html?id=${docSnap.id}'">✏️ Düzenle</button>
-                <button class="comment-btn" onclick="window.location.href='yorumlar.html?salonId=${data.salonId}&salonAdi=${encodeURIComponent(data.salonName)}&userName=${encodeURIComponent(data.userName)}&userSurname=${encodeURIComponent(data.userSurname)}'">⭐ Değerlendir</button>
+              <button class="comment-btn" 
+  onclick="window.location.href='yorumlar.html?salonId=${data.salonId}&salonAdi=${encodeURIComponent(data.salonName)}&userName=${encodeURIComponent(data.userName)}&userSurname=${encodeURIComponent(data.userSurname)}&sehir=${encodeURIComponent(data.salonAddress)}&salonKategori=${encodeURIComponent(data.salonCategory)}'">
+  ⭐ Değerlendir
+</button>
+
+
+
                 <button class="delete-btn" onclick="silRandevu('${docSnap.id}')">🗑️ Sil</button>
               </div>
             `;

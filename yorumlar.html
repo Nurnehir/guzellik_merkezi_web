@@ -206,6 +206,10 @@
     const salonAdi = new URLSearchParams(window.location.search).get("salonAdi") || "Güzellik Merkezi";
     const userName = new URLSearchParams(window.location.search).get("userName") || "";
     const userSurname = new URLSearchParams(window.location.search).get("userSurname") || "";
+    const sehir = new URLSearchParams(window.location.search).get("sehir") || "";
+    const salonKategori = new URLSearchParams(window.location.search).get("salonKategori") || "";
+
+
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("salonTitle").innerText = salonAdi;
@@ -255,16 +259,21 @@
         }
 
         try {
-          await addDoc(collection(db, "comments"), {
-            salonId,
-            salonAdi,
-            kullaniciAdi: currentUserEmail,
-            userName,
-            userSurname,
-            puan: secilenPuan,
-            yorum,
-            tarih: serverTimestamp()
-          });
+
+await addDoc(collection(db, "comments"), {
+  salonId,
+  salonAdi,
+  sehir,
+  salonKategori,
+  kullaniciAdi: currentUserEmail,
+  userName,
+  userSurname,
+  puan: secilenPuan,
+  yorum,
+  tarih: serverTimestamp()
+});
+
+
 
           const mesaj = document.createElement("div");
           mesaj.className = "success-message";
