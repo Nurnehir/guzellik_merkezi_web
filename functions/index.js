@@ -69,18 +69,19 @@ ${yorumMetni}`;
 app.post("/chatbot", async (req, res) => {
   const mesaj = req.body.mesaj?.trim().toLowerCase();
 
-  const sabitSorular = [
-    "istanbul'da en yüksek puanlı güzellik merkezi hangisi?",
-    "istanbul'da en iyi kuaför hangisi?",
-    "ankara'da en yüksek puanlı güzellik merkezi hangisi?",
-    "ankara'da en iyi kuaför hangisi?",
-    "izmir'de en yüksek puanlı güzellik merkezi hangisi?",
-    "izmir'da en iyi kuaför hangisi?",
-    "bursa'da en yüksek puanlı güzellik merkezi hangisi?",
-    "bursa'da en iyi kuaför hangisi?",
-    "elazığ'da en yüksek puanlı güzellik merkezi hangisi?",
-    "elazığ'da en iyi kuaför hangisi?"
-  ];
+ const sabitSorular = [
+  "istanbul'da en iyi güzellik merkezi hangisi?",
+  "istanbul'da en iyi kuaför hangisi?",
+  "ankara'da en iyi güzellik merkezi hangisi?",
+  "ankara'da en iyi kuaför hangisi?",
+  "izmir'de en iyi güzellik merkezi hangisi?",
+  "izmir'de en iyi kuaför hangisi?",
+  "bursa'da en iyi güzellik merkezi hangisi?",
+  "bursa'da en iyi kuaför hangisi?",
+  "elazığ'da en iyi güzellik merkezi hangisi?",
+  "elazığ'da en iyi kuaför hangisi?"
+];
+
 
   if (!mesaj || !sabitSorular.includes(mesaj)) {
     return res.json({ yanit: "Lütfen geçerli bir şehir ve desteklenen bir soru sorun. Örnek: 'İzmir'de en iyi kuaför hangisi?'" });
